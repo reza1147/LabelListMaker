@@ -374,14 +374,20 @@ public class Setting extends JFrame {
         lessThanStandard.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         lessThanStandard.setAlignmentX(Component.LEFT_ALIGNMENT);
 
+
         JRadioButton none1 = new JRadioButton("خاموش");
         none1.setFont(defaultFont);
+        none1.setSelected(true);
+        none1.setActionCommand("none1");
+
 
         JRadioButton metrazh1 = new JRadioButton("بر اساس متراژ");
         metrazh1.setFont(defaultFont);
+        metrazh1.setActionCommand("metrazh2");
 
         JRadioButton abaad1 = new JRadioButton("بر اساس ابعاد");
         abaad1.setFont(defaultFont);
+        abaad1.setActionCommand("abaad2");
 
         ButtonGroup bg = new ButtonGroup();
         bg.add(none1);
@@ -391,57 +397,234 @@ public class Setting extends JFrame {
 
         JTextField metrazhTxt1 = new JTextField();
         metrazhTxt1.setFont(defaultFont);
+        metrazhTxt1.setPreferredSize(new Dimension(100, 30));
         metrazhTxt1.setUI(new HintTextFieldUI("متراژ", true, Color.GRAY));
         parent.addIsListener(metrazhTxt1, Double.MIN_VALUE);
+        metrazhTxt1.setEnabled(false);
 
         JTextField arzTxt1 = new JTextField();
         arzTxt1.setFont(defaultFont);
+        arzTxt1.setPreferredSize(new Dimension(100, 30));
         arzTxt1.setUI(new HintTextFieldUI("عرض", true, Color.GRAY));
         parent.addIsListener(arzTxt1, Double.MIN_VALUE);
+        arzTxt1.setEnabled(false);
 
         JTextField tulTxt1 = new JTextField();
         tulTxt1.setFont(defaultFont);
+        tulTxt1.setPreferredSize(new Dimension(100, 30));
         tulTxt1.setUI(new HintTextFieldUI("طول", true, Color.GRAY));
         parent.addIsListener(tulTxt1, Double.MIN_VALUE);
+        tulTxt1.setEnabled(false);
+
+
+        ActionListener actionListener = e -> {
+            switch (e.getActionCommand()) {
+                case "none1":
+                    metrazhTxt1.setEnabled(false);
+                    arzTxt1.setEnabled(false);
+                    tulTxt1.setEnabled(false);
+                    break;
+                case "metrazh2":
+                    metrazhTxt1.setEnabled(true);
+                    arzTxt1.setEnabled(false);
+                    tulTxt1.setEnabled(false);
+                    break;
+                case "abaad2":
+                    arzTxt1.setEnabled(true);
+                    tulTxt1.setEnabled(true);
+                    metrazhTxt1.setEnabled(false);
+                    break;
+            }
+        };
+
+        none1.addActionListener(actionListener);
+        metrazh1.addActionListener(actionListener);
+        abaad1.addActionListener(actionListener);
 
         GridBagConstraints gc = new GridBagConstraints();
         gc.gridx = 0;
         gc.gridy = 0;
-        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1;
+        gc.weighty = 1;
+        gc.fill = GridBagConstraints.NONE;
         lessThanStandard.add(none1, gc);
 
         gc.gridx = 0;
         gc.gridy = 1;
-        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1;
+        gc.weighty = 1;
+        gc.fill = GridBagConstraints.NONE;
         lessThanStandard.add(metrazh1, gc);
 
         gc.gridx = 1;
         gc.gridy = 1;
-        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1;
+        gc.weighty = 1;
+        gc.fill = GridBagConstraints.NONE;
         lessThanStandard.add(metrazhTxt1, gc);
 
         gc.gridx = 0;
         gc.gridy = 2;
-        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1;
+        gc.weighty = 1;
+        gc.fill = GridBagConstraints.NONE;
         lessThanStandard.add(abaad1, gc);
 
         gc.gridx = 1;
         gc.gridy = 2;
-        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1;
+        gc.weighty = 1;
+        gc.fill = GridBagConstraints.NONE;
         lessThanStandard.add(arzTxt1, gc);
 
         gc.gridx = 2;
         gc.gridy = 2;
-        gc.fill = GridBagConstraints.HORIZONTAL;
+        gc.weightx = 1;
+        gc.weighty = 1;
+        gc.fill = GridBagConstraints.NONE;
         lessThanStandard.add(tulTxt1, gc);
 
 
-        GridBagConstraints gc2 = new GridBagConstraints();
+        JPanel moreThanStandard = new JPanel(new GridBagLayout());
+        moreThanStandard.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                        BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false),
+                                "خارج استاندارد بزرگ بودن",
+                                TitledBorder.LEADING,
+                                TitledBorder.DEFAULT_POSITION,
+                                defaultFont,
+                                Color.BLACK)
+                ));
+        moreThanStandard.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        moreThanStandard.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        gc.gridx = 0;
-        gc.gridy = 0;
-        gc.fill = GridBagConstraints.BOTH;
-        noneStandardPanel.add(lessThanStandard, gc2);
+
+        JRadioButton none2 = new JRadioButton("خاموش");
+        none2.setFont(defaultFont);
+        none2.setSelected(true);
+        none2.setActionCommand("none2");
+
+
+        JRadioButton metrazh2 = new JRadioButton("بر اساس متراژ");
+        metrazh2.setFont(defaultFont);
+        metrazh2.setActionCommand("metrazh2");
+
+        JRadioButton abaad2 = new JRadioButton("بر اساس ابعاد");
+        abaad2.setFont(defaultFont);
+        abaad2.setActionCommand("abaad2");
+
+        ButtonGroup bg2 = new ButtonGroup();
+        bg2.add(none2);
+        bg2.add(metrazh2);
+        bg2.add(abaad2);
+
+
+        JTextField metrazhTxt2 = new JTextField();
+        metrazhTxt2.setFont(defaultFont);
+        metrazhTxt2.setPreferredSize(new Dimension(100, 30));
+        metrazhTxt2.setUI(new HintTextFieldUI("متراژ", true, Color.GRAY));
+        parent.addIsListener(metrazhTxt2, Double.MIN_VALUE);
+        metrazhTxt2.setEnabled(false);
+
+        JTextField arzTxt2 = new JTextField();
+        arzTxt2.setFont(defaultFont);
+        arzTxt2.setPreferredSize(new Dimension(100, 30));
+        arzTxt2.setUI(new HintTextFieldUI("عرض", true, Color.GRAY));
+        parent.addIsListener(arzTxt2, Double.MIN_VALUE);
+        arzTxt2.setEnabled(false);
+
+        JTextField tulTxt2 = new JTextField();
+        tulTxt2.setFont(defaultFont);
+        tulTxt2.setPreferredSize(new Dimension(100, 30));
+        tulTxt2.setUI(new HintTextFieldUI("طول", true, Color.GRAY));
+        parent.addIsListener(tulTxt2, Double.MIN_VALUE);
+        tulTxt2.setEnabled(false);
+
+
+        ActionListener actionListener2 = e -> {
+            switch (e.getActionCommand()) {
+                case "none1":
+                    metrazhTxt2.setEnabled(false);
+                    arzTxt2.setEnabled(false);
+                    tulTxt2.setEnabled(false);
+                    break;
+                case "metrazh2":
+                    metrazhTxt2.setEnabled(true);
+                    arzTxt2.setEnabled(false);
+                    tulTxt2.setEnabled(false);
+                    break;
+                case "abaad2":
+                    arzTxt2.setEnabled(true);
+                    tulTxt2.setEnabled(true);
+                    metrazhTxt2.setEnabled(false);
+                    break;
+            }
+        };
+
+        none2.addActionListener(actionListener2);
+        metrazh2.addActionListener(actionListener2);
+        abaad2.addActionListener(actionListener2);
+
+        GridBagConstraints gc2 = new GridBagConstraints();
+        gc2.gridx = 0;
+        gc2.gridy = 0;
+        gc2.weightx = 1;
+        gc2.weighty = 1;
+        gc2.fill = GridBagConstraints.NONE;
+        moreThanStandard.add(none2, gc2);
+
+        gc2.gridx = 0;
+        gc2.gridy = 1;
+        gc2.weightx = 1;
+        gc2.weighty = 1;
+        gc2.fill = GridBagConstraints.NONE;
+        moreThanStandard.add(metrazh2, gc2);
+
+        gc2.gridx = 1;
+        gc2.gridy = 1;
+        gc2.weightx = 1;
+        gc2.weighty = 1;
+        gc2.fill = GridBagConstraints.NONE;
+        moreThanStandard.add(metrazhTxt2, gc2);
+
+        gc2.gridx = 0;
+        gc2.gridy = 2;
+        gc2.weightx = 1;
+        gc2.weighty = 1;
+        gc2.fill = GridBagConstraints.NONE;
+        moreThanStandard.add(abaad2, gc2);
+
+        gc2.gridx = 1;
+        gc2.gridy = 2;
+        gc2.weightx = 1;
+        gc2.weighty = 1;
+        gc2.fill = GridBagConstraints.NONE;
+        moreThanStandard.add(arzTxt2, gc2);
+
+        gc2.gridx = 2;
+        gc2.gridy = 2;
+        gc2.weightx = 1;
+        gc2.weighty = 1;
+        gc2.fill = GridBagConstraints.NONE;
+        moreThanStandard.add(tulTxt2, gc2);
+
+
+        GridBagConstraints gc3 = new GridBagConstraints();
+
+        gc3.gridx = 0;
+        gc3.gridy = 0;
+        gc3.weightx = 1;
+        gc3.weighty = 1;
+        gc3.fill = GridBagConstraints.NONE;
+        noneStandardPanel.add(lessThanStandard, gc3);
+
+        gc3.gridx = 0;
+        gc3.gridy = 1;
+        gc3.weightx = 1;
+        gc3.weighty = 1;
+        gc3.fill = GridBagConstraints.NONE;
+        noneStandardPanel.add(moreThanStandard, gc3);
     }
 
     private void initAboutPanel() {

@@ -5,7 +5,6 @@ import DS.GlassBuyInfo;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -18,10 +17,8 @@ import java.util.List;
  */
 public class PrintPage extends JFrame {
 
-    private JPanel adressPanel;
-    private JPanel titlePanel;
-    private JButton print, cancel;
-    private Font defaultFont;
+    private JButton print;
+    private final Font defaultFont;
     ActionListener buttonListener;
     JButton find;
     JTextField path;
@@ -41,18 +38,15 @@ public class PrintPage extends JFrame {
         setLayout(new BorderLayout(5, 5));
 
         this.list = list;
-        buttonListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource().equals(print)) {
-                    if (path.getText().isEmpty() || !new File(path.getText()).exists() || !path.getText().endsWith("lpa")) {
-                        if (getLabelFile()) {
-                            print();
-                        }
-                    } else print();
-                }
-                dispose();
+        buttonListener = e -> {
+            if (e.getSource().equals(print)) {
+                if (path.getText().isEmpty() || !new File(path.getText()).exists() || !path.getText().endsWith("lpa")) {
+                    if (getLabelFile()) {
+                        print();
+                    }
+                } else print();
             }
+            dispose();
         };
 
         initAdresPanel(pathStr, titleStr);
@@ -65,7 +59,7 @@ public class PrintPage extends JFrame {
         print.addActionListener(buttonListener);
         tempPanel1.add(print);
 
-        cancel = new JButton("لغو");
+        JButton cancel = new JButton("لغو");
         cancel.setFont(defaultFont);
         cancel.setPreferredSize(new Dimension(185, 50));
         cancel.addActionListener(buttonListener);
@@ -132,7 +126,7 @@ public class PrintPage extends JFrame {
     private void initAdresPanel(String pathStr, String titleStr) {
         JPanel tempPanel = new JPanel(new BorderLayout(5, 5));
 
-        adressPanel = new JPanel(new BorderLayout(5, 5));
+        JPanel adressPanel = new JPanel(new BorderLayout(5, 5));
         path = new JTextField(pathStr);
         path.setFont(defaultFont);
         adressPanel.add(path, BorderLayout.CENTER);
@@ -141,16 +135,11 @@ public class PrintPage extends JFrame {
         find = new JButton("فایل برچسب");
         find.setFont(defaultFont);
         find.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        find.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                getLabelFile();
-            }
-        });
+        find.addActionListener(e -> getLabelFile());
         adressPanel.add(find, BorderLayout.EAST);
         tempPanel.add(adressPanel, BorderLayout.NORTH);
 
-        titlePanel = new JPanel(new BorderLayout(5, 5));
+        JPanel titlePanel = new JPanel(new BorderLayout(5, 5));
         title = new JTextField(titleStr);
         title.setFont(defaultFont);
         title.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);

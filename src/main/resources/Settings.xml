@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<Setting>
+    <GlassTypes>
+        <Item>ساده فلوت 4 میل</Item>
+        <Item>سندپلاست 4 میل</Item>
+        <Item>مشجر برفی</Item>
+        <Item>مشجر حصیری</Item>
+        <Item>رفلکس نقره ای</Item>
+        <Item>رفلکس طلایی</Item>
+        <Item>رفلکس صورتی</Item>
+        <Item>رفلکس آبی</Item>
+        <Item>رفلکس سبز</Item>
+        <Item>رفلکس برنزه</Item>
+        <Item>ساده فلوت 6 میل</Item>
+        <Item>ساده فلوت 8 میل</Item>
+        <Item>ساده شیت 4 میل</Item>
+        <Item>برنزه فلوت 4 میل</Item>
+        <Item>برنزه فلوت 6 میل</Item>
+    </GlassTypes>
+    <LabelType>
+        <LabelFile></LabelFile>
+        <PrinterName></PrinterName>
+        <LabelTitle></LabelTitle>
+    </LabelType>
+</Setting>

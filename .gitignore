@@ -9,3 +9,7 @@
 .idea/
 target/
 *.xlsx#
+*.iml
+*.ipr
+*.iws
+out/

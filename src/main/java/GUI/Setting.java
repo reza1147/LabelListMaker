@@ -3,6 +3,7 @@ package GUI;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
@@ -38,7 +39,7 @@ public class Setting extends JFrame {
 
 
     // NonStandardTab Components start
-    private JPanel NonStandardPanel;
+    private JPanel noneStandardPanel;
     // NonStandardTab Components end
 
     // infoPanel Components initializer
@@ -286,10 +287,11 @@ public class Setting extends JFrame {
 
 
         initListPanel();
-        initNonStandardPanel();
+        initNoneStandardPanel();
         initAboutPanel();
 
         tempTab.add("لیست شیشه ها", listPanel);
+        tempTab.add("خارج استاندارد", noneStandardPanel);
         tempTab.add("درباره نرم افزار", aboutPanel);
         tempTab.setFont(defaultFont);
 
@@ -355,9 +357,91 @@ public class Setting extends JFrame {
         setVisible(true);
     }
 
-    private void initNonStandardPanel() {
-        NonStandardPanel=new JPanel(new GridBagLayout());
+    private void initNoneStandardPanel() {
+        noneStandardPanel = new JPanel(new GridBagLayout());
 
+        JPanel lessThanStandard = new JPanel(new GridBagLayout());
+        lessThanStandard.setBorder(
+                BorderFactory.createCompoundBorder(
+                        BorderFactory.createEmptyBorder(5, 5, 5, 5),
+                        BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false),
+                                "خارج استاندارد ریز بودن",
+                                TitledBorder.LEADING,
+                                TitledBorder.DEFAULT_POSITION,
+                                defaultFont,
+                                Color.BLACK)
+                ));
+        lessThanStandard.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        lessThanStandard.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        JRadioButton none1 = new JRadioButton("خاموش");
+        none1.setFont(defaultFont);
+
+        JRadioButton metrazh1 = new JRadioButton("بر اساس متراژ");
+        metrazh1.setFont(defaultFont);
+
+        JRadioButton abaad1 = new JRadioButton("بر اساس ابعاد");
+        abaad1.setFont(defaultFont);
+
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(none1);
+        bg.add(metrazh1);
+        bg.add(abaad1);
+
+
+        JTextField metrazhTxt1 = new JTextField();
+        metrazhTxt1.setFont(defaultFont);
+        metrazhTxt1.setUI(new HintTextFieldUI("متراژ", true, Color.GRAY));
+        parent.addIsListener(metrazhTxt1, Double.MIN_VALUE);
+
+        JTextField arzTxt1 = new JTextField();
+        arzTxt1.setFont(defaultFont);
+        arzTxt1.setUI(new HintTextFieldUI("عرض", true, Color.GRAY));
+        parent.addIsListener(arzTxt1, Double.MIN_VALUE);
+
+        JTextField tulTxt1 = new JTextField();
+        tulTxt1.setFont(defaultFont);
+        tulTxt1.setUI(new HintTextFieldUI("طول", true, Color.GRAY));
+        parent.addIsListener(tulTxt1, Double.MIN_VALUE);
+
+        GridBagConstraints gc = new GridBagConstraints();
+        gc.gridx = 0;
+        gc.gridy = 0;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        lessThanStandard.add(none1, gc);
+
+        gc.gridx = 0;
+        gc.gridy = 1;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        lessThanStandard.add(metrazh1, gc);
+
+        gc.gridx = 1;
+        gc.gridy = 1;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        lessThanStandard.add(metrazhTxt1, gc);
+
+        gc.gridx = 0;
+        gc.gridy = 2;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        lessThanStandard.add(abaad1, gc);
+
+        gc.gridx = 1;
+        gc.gridy = 2;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        lessThanStandard.add(arzTxt1, gc);
+
+        gc.gridx = 2;
+        gc.gridy = 2;
+        gc.fill = GridBagConstraints.HORIZONTAL;
+        lessThanStandard.add(tulTxt1, gc);
+
+
+        GridBagConstraints gc2 = new GridBagConstraints();
+
+        gc.gridx = 0;
+        gc.gridy = 0;
+        gc.fill = GridBagConstraints.BOTH;
+        noneStandardPanel.add(lessThanStandard, gc2);
     }
 
     private void initAboutPanel() {

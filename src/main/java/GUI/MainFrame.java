@@ -9,6 +9,8 @@ import org.jdom2.JDOMException;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -947,6 +949,50 @@ public class MainFrame extends JFrame {
 
     public static void main(String[] args) throws InterruptedException, IOException {
         MainFrame temp = new MainFrame();
+    }
+     void addIsListener(JTextField txt, Object t) {
+        DocumentListener dl = new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                checkIs(txt, t);
+            }
+
+            public void removeUpdate(DocumentEvent e) {
+                checkIs(txt, t);
+            }
+
+            public void insertUpdate(DocumentEvent e) {
+                checkIs(txt, t);
+            }
+        };
+        txt.getDocument().addDocumentListener(dl);
+
+    }
+
+    boolean checkIs(JTextField txt, Object Type) {
+        String str = txt.getText();
+        boolean err = false;
+        if (str.isEmpty())
+            err = true;
+        if (Type instanceof Integer)
+            try {
+                Integer.parseInt(str);
+            } catch (NumberFormatException e) {
+                err = true;
+            }
+        else if (Type instanceof Double)
+            try {
+                Double.parseDouble(str);
+            } catch (NumberFormatException e) {
+                err = true;
+            }
+        if (err) {
+            txt.setBorder(BorderFactory.createLineBorder(Color.RED));
+            repaint();
+        } else {
+            txt.setBorder(BorderFactory.createLineBorder(Color.GRAY));
+            repaint();
+        }
+        return err;
     }
 }
 

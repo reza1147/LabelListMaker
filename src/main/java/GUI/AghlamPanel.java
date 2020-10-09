@@ -77,6 +77,7 @@ public class AghlamPanel extends JPanel {
         add(khat);
         add(tedad);
 
+        syncToolTip();
     }
 
     public boolean checkInformation() {
@@ -99,8 +100,10 @@ public class AghlamPanel extends JPanel {
             flag = false;
             tedad.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         }
-        if (flag)
+        if (flag) {
             checkNoneStandard();
+            syncToolTip();
+        }
         return flag;
     }
 
@@ -212,5 +215,20 @@ public class AghlamPanel extends JPanel {
     public void syncNoneStandard(Double[][] noneStandarList) {
         this.noneStandarList = noneStandarList;
         checkNoneStandard();
+    }
+
+    private void syncToolTip() {
+        String color="black";
+        if(getRizMetrazh()>0)
+            color="green";
+        else if(getBigMetrazh()>0)
+            color="blue";
+        String tip = String.format("<html><font size=\"6\" face=\"tahoma\" color=\"%s\">%f</font> </html>",color,getMetrazh());
+        zarb.setToolTipText(tip);
+        khat.setToolTipText(tip);
+        radif.setToolTipText(tip);
+        arz.setToolTipText(tip);
+        tul.setToolTipText(tip);
+        tedad.setToolTipText(tip);
     }
 }

@@ -314,7 +314,6 @@ public class MainFrame extends JFrame {
     // infoPanel Components initializer
     private void initListPanel() {
         listPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        Lists = new ArrayList<>();
         listShishe = new Vector<>();
         Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(), noneStandarList));
         Lists.get(Lists.size() - 1).addPropertyChangeListener(aghlamListener);
@@ -748,6 +747,8 @@ public class MainFrame extends JFrame {
         JPanel mainPanel = new JPanel(new BorderLayout(5, 5));
         changeMode = false;
         homeDir = System.getProperty("user.home") + "/LabelMaker/";
+        Lists = new ArrayList<>();
+        startApp();
         initListeners();
         initStatePanel();
         mainPanel.add(statePanel, BorderLayout.SOUTH);
@@ -777,7 +778,7 @@ public class MainFrame extends JFrame {
         add(mainPanel, BorderLayout.CENTER);
 
 
-        startApp();
+
         dataBaseManager = new DataBaseManager(homeDir);
         syncDBList();
 

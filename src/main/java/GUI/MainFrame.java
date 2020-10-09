@@ -283,7 +283,7 @@ public class MainFrame extends JFrame {
         listPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         Lists = new ArrayList<>();
         listShishe = new Vector<>();
-        Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size()));
+        Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(),noneStandarList));
         Lists.get(Lists.size() - 1).addPropertyChangeListener(aghlamListener);
         listPanel.add(Lists.get(Lists.size() - 1));
         addWindowStateListener(listPanelStateListener);
@@ -885,12 +885,12 @@ public class MainFrame extends JFrame {
     //check
     private void syncListShishe(Vector<String> list) {
         listShishe = list;
-        for (ListPanel temp : Lists)
-            temp.syncShisheLiast(list);
+        Lists.forEach(l -> l.syncShisheLiast(list));
     }
 
     private void syncNoneStandards(Double[][] noneStandarList) {
         this.noneStandarList = noneStandarList;
+        Lists.forEach(l -> l.syncNoneStandard(noneStandarList));
     }
 
     private void restoreList(int orderID) {
@@ -918,7 +918,7 @@ public class MainFrame extends JFrame {
             Lists.remove(Lists.size() - 1);
         }
         for (; newN > oldN; oldN++) {
-            Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size()));
+            Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(), noneStandarList));
             Lists.get(Lists.size() - 1).addPropertyChangeListener(aghlamListener);
             listPanel.add(Lists.get(Lists.size() - 1));
         }

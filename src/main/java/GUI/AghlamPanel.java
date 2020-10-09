@@ -18,12 +18,14 @@ public class AghlamPanel extends JPanel {
     private Font defaultFont;
     private FocusListener aghlamPanelListener;
     private Integer numberR;
+    private Double[][] noneStandarList;
 
-    public AghlamPanel(int number, Font defaultFont) {
+    public AghlamPanel(int number, Font defaultFont, Double[][] noneStandarList) {
         super(new FlowLayout(FlowLayout.RIGHT, 3, 3));
         setPreferredSize(new Dimension(250, 35));
         this.defaultFont = defaultFont;
         this.numberR = number;
+        this.noneStandarList = noneStandarList;
         Set<AWTKeyStroke> defaultKeys = getFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS);
         Set<AWTKeyStroke> newKeys = new HashSet<>(defaultKeys);
         newKeys.add(KeyStroke.getKeyStroke("pressed ENTER"));
@@ -97,12 +99,43 @@ public class AghlamPanel extends JPanel {
             flag = false;
             tedad.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
         }
+        if (flag)
+            checkNoneStandard();
         return flag;
+    }
+
+    private void checkNoneStandard() {
+        if (noneStandarList[0] == null) {
+            setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        } else if (noneStandarList[0].length == 1) {
+            if (getSingleMetrazh()/10000 < noneStandarList[0][0])
+                setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
+        } else if (noneStandarList[0].length == 2) {
+            if (getArz() < noneStandarList[0][0] || getTul() < noneStandarList[0][1])
+                setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
+        }
+        if (noneStandarList[1] == null) {
+            setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        } else if (noneStandarList[1].length == 1) {
+            if (getSingleMetrazh()/10000 > noneStandarList[1][0])
+                setBorder(BorderFactory.createLineBorder(Color.BLUE, 1));
+        } else if (noneStandarList[1].length == 2) {
+            if (getArz() > noneStandarList[1][0] || getTul() > noneStandarList[1][1])
+                setBorder(BorderFactory.createLineBorder(Color.BLUE, 1));
+        }
     }
 
     public double getMetrazh() {
         try {
             return Double.parseDouble(arz.getText()) * Double.parseDouble(tul.getText()) * Integer.parseInt(tedad.getText());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    public double getSingleMetrazh() {
+        try {
+            return Double.parseDouble(arz.getText()) * Double.parseDouble(tul.getText());
         } catch (Exception e) {
             return 0;
         }
@@ -117,11 +150,11 @@ public class AghlamPanel extends JPanel {
     }
 
     public double getTul() {
-        return Double.parseDouble(tul.getText());
+        return Math.max(Double.parseDouble(tul.getText()), Double.parseDouble(arz.getText()));
     }
 
     public double getArz() {
-        return Double.parseDouble(arz.getText());
+        return Math.min(Double.parseDouble(tul.getText()), Double.parseDouble(arz.getText()));
     }
 
     public void setAttribute(Glass g) {
@@ -140,12 +173,17 @@ public class AghlamPanel extends JPanel {
 
     public Glass getGlass() {
         if (checkInformation()) {
-            Double a = Double.parseDouble(arz.getText());
-            Double t = Double.parseDouble(tul.getText());
+            Double a = getArz();
+            Double t = getTul();
             Integer te = Integer.parseInt(tedad.getText());
             if (a > 0 && t > 0 && te > 0)
                 return new Glass(a, t, te);
         }
         return null;
+    }
+
+    public void syncNoneStandard(Double[][] noneStandarList) {
+        this.noneStandarList = noneStandarList;
+        checkNoneStandard();
     }
 }

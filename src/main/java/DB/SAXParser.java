@@ -85,14 +85,14 @@ public class SAXParser {
             else if (noneStandarList[0].length == 1) {
                 less.setAttribute("active", "true");
                 Element metrazh = new Element("metrazh");
-                metrazh.setText(String.valueOf(noneStandarList[1][0]));
+                metrazh.setText(String.valueOf(noneStandarList[0][0]));
                 less.addContent(metrazh);
             } else if (noneStandarList[0].length == 2) {
                 less.setAttribute("active", "true");
                 Element arz = new Element("arz");
-                arz.setText(String.valueOf(noneStandarList[1][0]));
+                arz.setText(String.valueOf(noneStandarList[0][0]));
                 Element tul = new Element("tul");
-                tul.setText(String.valueOf(noneStandarList[1][1]));
+                tul.setText(String.valueOf(noneStandarList[0][1]));
                 less.addContent(arz);
                 less.addContent(tul);
             }

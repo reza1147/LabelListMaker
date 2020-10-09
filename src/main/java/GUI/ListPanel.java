@@ -33,6 +33,7 @@ public class ListPanel extends JPanel {
     private DefaultComboBoxModel<String> list1, list2;
     private DefaultComboBoxModel<Integer> list3;
     private Integer numberR;
+    private Double[][] noneStandarList;
     // Listeners start
     private ActionListener listButtonPanelListener;
     private FocusListener listButtonPanelFocusListener;
@@ -40,11 +41,12 @@ public class ListPanel extends JPanel {
     private PropertyChangeListener aghlamListener;
     // Listeners end
 
-    public ListPanel(Font defaultFont, int newHeight, Vector<String> list, int number) {
+    public ListPanel(Font defaultFont, int newHeight, Vector<String> list, int number, Double[][] noneStandarList) {
         super(new BorderLayout(5, 5));
         this.defaultFont = defaultFont;
         ertefa = 40;
         numberR = number;
+        this.noneStandarList = noneStandarList;
         list1 = new DefaultComboBoxModel<>();
         list2 = new DefaultComboBoxModel<>();
         Integer[] tempSpacer = {6, 8, 10, 12, 14, 16};
@@ -207,7 +209,7 @@ public class ListPanel extends JPanel {
         topPanel.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, newKeys);
 
         aghlams = new ArrayList<>();
-        aghlams.add(new AghlamPanel(1, this.defaultFont));
+        aghlams.add(new AghlamPanel(1, this.defaultFont, noneStandarList));
         aghlams.get(aghlams.size() - 1).addPropertyChangeListener(aghlamListener);
         botPanel.add(aghlams.get(aghlams.size() - 1));
         JScrollPane tablePanelPane = new JScrollPane(botPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -246,7 +248,7 @@ public class ListPanel extends JPanel {
     }
 
     public void syncShisheLiast(Vector<String> newList) {
-        if (newList.indexOf(list1.getSelectedItem()) == -1) {
+        if (!newList.contains(list1.getSelectedItem())) {
             list1 = new DefaultComboBoxModel<>(newList);
             list1.setSelectedItem("شیشه را انتخاب کنید");
         } else {
@@ -255,7 +257,7 @@ public class ListPanel extends JPanel {
             list1.setSelectedItem(temp);
         }
 
-        if (newList.indexOf(list2.getSelectedItem()) == -1) {
+        if (!newList.contains(list2.getSelectedItem())) {
             list2 = new DefaultComboBoxModel<>(newList);
             list2.setSelectedItem("شیشه را انتخاب کنید");
         } else {
@@ -268,22 +270,29 @@ public class ListPanel extends JPanel {
 
     }
 
+    public void syncNoneStandard(Double[][] noneStandarList) {
+        this.noneStandarList = noneStandarList;
+        aghlams.forEach(a -> {
+            a.syncNoneStandard(noneStandarList);
+        });
+    }
+
     public boolean checkInformations() {
-        boolean flag=true;
+        boolean flag = true;
         if (list1.getSelectedItem().equals("شیشه را انتخاب کنید")) {
             shishe1.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
-            flag= false;
+            flag = false;
         } else
             shishe1.setBorder(new JComboBox<String>().getBorder());
 
         if (list2.getSelectedItem().equals("شیشه را انتخاب کنید")) {
             shishe2.setBorder(BorderFactory.createLineBorder(Color.RED, 1));
-            flag= false;
+            flag = false;
         } else
             shishe2.setBorder(new JComboBox<String>().getBorder());
-        for(AghlamPanel ap:aghlams)
-            if(!ap.checkInformation())
-                flag=false;
+        for (AghlamPanel ap : aghlams)
+            if (!ap.checkInformation())
+                flag = false;
         return flag;
     }
 
@@ -319,7 +328,7 @@ public class ListPanel extends JPanel {
             repaint();
         }
         for (; newN > oldN; oldN++) {
-            aghlams.add(new AghlamPanel(aghlams.size() + 1, defaultFont));
+            aghlams.add(new AghlamPanel(aghlams.size() + 1, defaultFont, noneStandarList));
             aghlams.get(aghlams.size() - 1).addPropertyChangeListener(aghlamListener);
             botPanel.add(aghlams.get(aghlams.size() - 1));
             firePropertyChange("metrazh", null, null);

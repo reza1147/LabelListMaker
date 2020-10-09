@@ -22,7 +22,7 @@ public class AghlamPanel extends JPanel {
 
     public AghlamPanel(int number, Font defaultFont, Double[][] noneStandarList) {
         super(new FlowLayout(FlowLayout.RIGHT, 3, 3));
-        setPreferredSize(new Dimension(250, 35));
+        setPreferredSize(new Dimension(250, 39));
         this.defaultFont = defaultFont;
         this.numberR = number;
         this.noneStandarList = noneStandarList;
@@ -106,22 +106,22 @@ public class AghlamPanel extends JPanel {
 
     private void checkNoneStandard() {
         if (noneStandarList[0] == null) {
-            setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         } else if (noneStandarList[0].length == 1) {
-            if (getSingleMetrazh()/10000 < noneStandarList[0][0])
-                setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
+            if (getSingleMetrazh() / 10000 < noneStandarList[0][0])
+                setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
         } else if (noneStandarList[0].length == 2) {
             if (getArz() < noneStandarList[0][0] || getTul() < noneStandarList[0][1])
-                setBorder(BorderFactory.createLineBorder(Color.GREEN, 1));
+                setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
         }
         if (noneStandarList[1] == null) {
-            setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+            setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
         } else if (noneStandarList[1].length == 1) {
-            if (getSingleMetrazh()/10000 > noneStandarList[1][0])
-                setBorder(BorderFactory.createLineBorder(Color.BLUE, 1));
+            if (getSingleMetrazh() / 10000 > noneStandarList[1][0])
+                setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
         } else if (noneStandarList[1].length == 2) {
             if (getArz() > noneStandarList[1][0] || getTul() > noneStandarList[1][1])
-                setBorder(BorderFactory.createLineBorder(Color.BLUE, 1));
+                setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
         }
     }
 
@@ -131,6 +131,33 @@ public class AghlamPanel extends JPanel {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public double getRizMetrazh() {
+        if (noneStandarList[0] == null) {
+            return 0;
+        } else if (noneStandarList[0].length == 1) {
+            if (getSingleMetrazh() / 10000 < noneStandarList[0][0])
+                return getMetrazh();
+        } else if (noneStandarList[0].length == 2) {
+            if (getArz() < noneStandarList[0][0] || getTul() < noneStandarList[0][1])
+                return getMetrazh();
+        }
+        return 0;
+
+    }
+
+    public double getBigMetrazh() {
+        if (noneStandarList[1] == null) {
+            return 0;
+        } else if (noneStandarList[1].length == 1) {
+            if (getSingleMetrazh() / 10000 > noneStandarList[1][0])
+                return getMetrazh();
+        } else if (noneStandarList[1].length == 2) {
+            if (getArz() > noneStandarList[1][0] || getTul() > noneStandarList[1][1])
+                return getMetrazh();
+        }
+        return 0;
     }
 
     public double getSingleMetrazh() {

@@ -24,7 +24,7 @@ public class ListPanel extends JPanel {
     private JComboBox<Integer> spacer;
     private JCheckBox gaz;
     private ArrayList<AghlamPanel> aghlams;
-    private JLabel metrazh, tedad;
+    private JLabel metrazh, tedad, metrazhRiz, metrazhBig;
     private JButton afzudan, kastan;
     private JTextField aghlam;
     private Font defaultFont;
@@ -113,9 +113,9 @@ public class ListPanel extends JPanel {
             }
         };
         topPanel = new JPanel(new FlowLayout());
-        topPanel.setPreferredSize(new Dimension(250, 180));
+        topPanel.setPreferredSize(new Dimension(250, 210));
         botPanel = new JPanel(new FlowLayout());
-        botPanel.setPreferredSize(new Dimension(250, 35));
+        botPanel.setPreferredSize(new Dimension(250, 39));
 
         shishe1 = new JComboBox<>();
         shishe1.setFont(this.defaultFont);
@@ -163,17 +163,32 @@ public class ListPanel extends JPanel {
 
         topPanel.add(gaz);
 
-        metrazh = new JLabel("متراژ:1.0");
+        metrazh = new JLabel("متراژ:1.00");
         metrazh.setFont(this.defaultFont);
-        metrazh.setPreferredSize(new Dimension(130, 30));
+        metrazh.setPreferredSize(new Dimension(110, 30));
         metrazh.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         topPanel.add(metrazh);
+
+
+        metrazhRiz = new JLabel("ریز:0.00");
+        metrazhRiz.setFont(this.defaultFont);
+        metrazhRiz.setPreferredSize(new Dimension(120, 30));
+        metrazhRiz.setForeground(Color.MAGENTA);
+        metrazhRiz.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        topPanel.add(metrazhRiz);
 
         tedad = new JLabel("تعداد:1");
         tedad.setFont(this.defaultFont);
         tedad.setPreferredSize(new Dimension(110, 30));
         tedad.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         topPanel.add(tedad);
+
+        metrazhBig = new JLabel("بزرگ:0.00");
+        metrazhBig.setFont(this.defaultFont);
+        metrazhBig.setPreferredSize(new Dimension(120, 30));
+        metrazhBig.setForeground(Color.MAGENTA);
+        metrazhBig.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        topPanel.add(metrazhBig);
 
 
         kastan = new JButton("-");
@@ -230,6 +245,8 @@ public class ListPanel extends JPanel {
     private void syncMetrazh() {
         firePropertyChange("metrazh", null, null);
         metrazh.setText("متراژ:" + String.format("%.2f", getMetrazh() / 10000));
+        metrazhRiz.setText("ریز:" + String.format("%.2f", getRizMetrazh() / 10000));
+        metrazhBig.setText("بزرگ:" + String.format("%.2f", getBigMetrazh() / 10000));
     }
 
     public int getTedad() {
@@ -245,6 +262,20 @@ public class ListPanel extends JPanel {
         for (AghlamPanel lp : aghlams)
             m += lp.getMetrazh();
         return m;
+    }
+
+    public double getRizMetrazh() {
+        double r = 0;
+        for (AghlamPanel lp : aghlams)
+            r += lp.getRizMetrazh();
+        return r;
+    }
+
+    public double getBigMetrazh() {
+        double b = 0;
+        for (AghlamPanel lp : aghlams)
+            b += lp.getBigMetrazh();
+        return b;
     }
 
     public void syncShisheLiast(Vector<String> newList) {
@@ -323,7 +354,7 @@ public class ListPanel extends JPanel {
             syncTedad();
             botPanel.remove(aghlams.get(aghlams.size() - 1));
             aghlams.remove(aghlams.size() - 1);
-            botPanel.setPreferredSize(new Dimension(250, ertefa = ertefa - 40));
+            botPanel.setPreferredSize(new Dimension(250, ertefa = ertefa - 44));
             revalidate();
             repaint();
         }
@@ -335,7 +366,7 @@ public class ListPanel extends JPanel {
             firePropertyChange("tedad", null, null);
             syncMetrazh();
             syncTedad();
-            botPanel.setPreferredSize(new Dimension(250, ertefa = ertefa + 40));
+            botPanel.setPreferredSize(new Dimension(250, ertefa = ertefa + 44));
             revalidate();
             repaint();
         }

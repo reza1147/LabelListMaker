@@ -51,6 +51,7 @@ public class MainFrame extends JFrame {
     // statePanel Components start
     private JPanel statePanel;
     private JLabel metrazh, tedad;
+    private JLabel metrazhRiz, metrazhBig;
     // statePanel Components end
 
     // infoPanel Components start
@@ -162,7 +163,7 @@ public class MainFrame extends JFrame {
 
     // statePanel Components initializer
     private void initStatePanel() {
-        statePanel = new JPanel(new GridLayout(1, 6, 5, 5));
+        statePanel = new JPanel(new GridLayout(1, 12, 5, 5));
 
         JLabel metrazh1 = new JLabel("مترمربع");
         metrazh1.setFont(defaultFont);
@@ -193,6 +194,38 @@ public class MainFrame extends JFrame {
         tedad2.setFont(defaultFont);
         tedad2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         statePanel.add(tedad2);
+
+        JLabel metrazhRiz1 = new JLabel("مترمربع");
+        metrazhRiz1.setFont(defaultFont);
+        metrazhRiz1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        statePanel.add(metrazhRiz1);
+
+        metrazhRiz = new JLabel("0.00");
+        metrazhRiz.setFont(defaultFont);
+        metrazhRiz.setForeground(Color.MAGENTA);
+        metrazhRiz.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        statePanel.add(metrazhRiz);
+
+        JLabel metrazhRiz2 = new JLabel("ابعاد ریز:");
+        metrazhRiz2.setFont(defaultFont);
+        metrazhRiz2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        statePanel.add(metrazhRiz2);
+
+        JLabel metrazhBig1 = new JLabel("مترمربع");
+        metrazhBig1.setFont(defaultFont);
+        metrazhBig1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        statePanel.add(metrazhBig1);
+
+        metrazhBig = new JLabel("0.00");
+        metrazhBig.setFont(defaultFont);
+        metrazhBig.setForeground(Color.MAGENTA);
+        metrazhBig.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        statePanel.add(metrazhBig);
+
+        JLabel metrazhBig2 = new JLabel("ابعاد بزرگ:");
+        metrazhBig2.setFont(defaultFont);
+        metrazhBig2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        statePanel.add(metrazhBig2);
 
     }
 
@@ -283,7 +316,7 @@ public class MainFrame extends JFrame {
         listPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         Lists = new ArrayList<>();
         listShishe = new Vector<>();
-        Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(),noneStandarList));
+        Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(), noneStandarList));
         Lists.get(Lists.size() - 1).addPropertyChangeListener(aghlamListener);
         listPanel.add(Lists.get(Lists.size() - 1));
         addWindowStateListener(listPanelStateListener);
@@ -761,9 +794,16 @@ public class MainFrame extends JFrame {
 
     private void syncMetrazh() {
         double m = 0;
-        for (ListPanel lp : Lists)
+        double r = 0;
+        double b = 0;
+        for (ListPanel lp : Lists) {
             m += lp.getMetrazh();
+            r += lp.getRizMetrazh();
+            b += lp.getBigMetrazh();
+        }
         metrazh.setText(String.format("%.2f", m / 10000));
+        metrazhRiz.setText(String.format("%.2f", r / 10000));
+        metrazhBig.setText(String.format("%.2f", b / 10000));
     }
 
     private void startSetting() {

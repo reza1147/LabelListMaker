@@ -1,7 +1,5 @@
 package GUI;
 
-import org.jdom2.Element;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
@@ -637,21 +635,27 @@ public class Setting extends JFrame {
             none1.setSelected(true);
         else if (noneStandarList[0].length == 1) {
             metrazh1.setSelected(true);
-            metrazhTxt1.setText(noneStandarList[0][0]+"");
+            metrazhTxt1.setText(noneStandarList[0][0] + "");
+            metrazhTxt1.setEnabled(true);
         } else if (noneStandarList[0].length == 2) {
             abaad1.setSelected(true);
-            arzTxt1.setText(noneStandarList[0][0]+"");
-            tulTxt1.setText(noneStandarList[0][1]+"");
+            arzTxt1.setText(noneStandarList[0][0] + "");
+            tulTxt1.setText(noneStandarList[0][1] + "");
+            arzTxt1.setEnabled(true);
+            tulTxt1.setEnabled(true);
         }
         if (noneStandarList[1] == null)
             none2.setSelected(true);
         else if (noneStandarList[1].length == 1) {
             metrazh2.setSelected(true);
-            metrazhTxt2.setText(noneStandarList[1][0]+"");
+            metrazhTxt2.setText(noneStandarList[1][0] + "");
+            metrazhTxt2.setEnabled(true);
         } else if (noneStandarList[1].length == 2) {
             abaad2.setSelected(true);
-            arzTxt2.setText(noneStandarList[1][0]+"");
-            tulTxt2.setText(noneStandarList[1][1]+"");
+            arzTxt2.setText(noneStandarList[1][0] + "");
+            tulTxt2.setText(noneStandarList[1][1] + "");
+            arzTxt2.setEnabled(true);
+            tulTxt2.setEnabled(true);
         }
     }
 

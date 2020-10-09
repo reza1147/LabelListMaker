@@ -69,9 +69,7 @@ public class MainFrame extends JFrame {
 
     //Settings list start
     private Vector<String> listShishe;
-    private File labelFile;
-    private String labelTitle;
-    private String printerName;
+    private Double[][] noneStandarList;
     //Settings list end
 
     // Listeners start
@@ -626,7 +624,7 @@ public class MainFrame extends JFrame {
 
     private void startPrint() {
         try {
-            SAXParser getLastPrint = new SAXParser(homeDir + "lastPrint.xml");
+            SAXParser getLastPrint = new SAXParser(homeDir + "Settings.xml");
             PrintPage printPage = new PrintPage(this, getLastPrint.getLastPrint(), getLastPrint.getLastTitle(), dataBaseManager.getOrderList());
             setEnabled(false);
             printPage.addPropertyChangeListener(new PropertyChangeListener() {
@@ -635,10 +633,8 @@ public class MainFrame extends JFrame {
                     if (e.getPropertyName().equals("print")) {
                         String[] str = (String[]) e.getOldValue();
                         saveLastPrint(str[0], str[1]);
-                        System.out.println("aweuq");
                         dataBaseManager.printListMaker((List<GlassBuyInfo>) e.getNewValue(), str[1]);
-                        boolean isWindows = System.getProperty("os.name")
-                                .toLowerCase().startsWith("windows");
+                        boolean isWindows = OsCheck.getOperatingSystemType().equals(OsCheck.OSType.Windows);
                         if (isWindows) {
                             ProcessBuilder pb = new ProcessBuilder("C:\\Program Files (x86)\\Labeljoy 5\\Labeljoy5.exe",
                                     "/p",
@@ -773,22 +769,30 @@ public class MainFrame extends JFrame {
     private void startSetting() {
         setEnabled(false);
         Setting tempSetting = new Setting(this);
-        tempSetting.addPropertyChangeListener("listShishe", new PropertyChangeListener() {
-            @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                if (e.getPropertyName().equals("listShishe")) {
-                    syncListShishe((Vector<String>) e.getNewValue());
-                    saveSettings();
-                }
+        tempSetting.addPropertyChangeListener(e -> {
+            if (e.getPropertyName().equals("listShishe")) {
+                syncListShishe((Vector<String>) e.getNewValue());
+                saveListShishe();
+            } else if (e.getPropertyName().equals("NoneStandard")) {
+                syncNoneStandards((Double[][]) e.getNewValue());
+                saveNoneStandards();
             }
         });
+
     }
 
-    public Vector<String> getListShishe() {
-        return listShishe;
+    private void saveNoneStandards() {
+        try {
+            SAXParser temp = new SAXParser(homeDir + "Settings.xml");
+            temp.makeXML(getNoneStandarList());
+        } catch (JDOMException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void saveSettings() {
+    private void saveListShishe() {
         try {
             SAXParser temp = new SAXParser(homeDir + "Settings.xml");
             temp.makeXML(getListShishe());
@@ -801,13 +805,21 @@ public class MainFrame extends JFrame {
 
     private void saveLastPrint(String file, String title) {
         try {
-            SAXParser temp = new SAXParser(homeDir + "lastPrint.xml");
+            SAXParser temp = new SAXParser(homeDir + "Settings.xml");
             temp.makeXML(file, title);
         } catch (JDOMException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public Vector<String> getListShishe() {
+        return listShishe;
+    }
+
+    public Double[][] getNoneStandarList() {
+        return noneStandarList;
     }
 
     private void startApp() {
@@ -817,14 +829,11 @@ public class MainFrame extends JFrame {
         }
         try {
             SAXParser temp = new SAXParser(f.getAbsolutePath());
-            if (!temp.convert())
-                JOptionPane.showMessageDialog(null, "فایل تنظیمات دچار مشکل شده است! آن را پاک کنید.", "خطا", JOptionPane.ERROR_MESSAGE);
-            else
-                syncListShishe(temp.getList());
+            syncListShishe(temp.getList());
         } catch (JDOMException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "فایل تنظیمات دچار مشکل شده است! آن را پاک کنید.", "خطا", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "فایل تنظیمات دچار مشکل شده است! آن را پاک کنید.", "خطا", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -877,6 +886,10 @@ public class MainFrame extends JFrame {
         listShishe = list;
         for (ListPanel temp : Lists)
             temp.syncShisheLiast(list);
+    }
+
+    private void syncNoneStandards(Double[][] noneStandarList) {
+        this.noneStandarList = noneStandarList;
     }
 
     private void restoreList(int orderID) {
@@ -950,7 +963,8 @@ public class MainFrame extends JFrame {
     public static void main(String[] args) throws InterruptedException, IOException {
         MainFrame temp = new MainFrame();
     }
-     void addIsListener(JTextField txt, Object t) {
+
+    void addIsListener(JTextField txt, Object t) {
         DocumentListener dl = new DocumentListener() {
             public void changedUpdate(DocumentEvent e) {
                 checkIs(txt, t);

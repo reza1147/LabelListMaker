@@ -22,21 +22,33 @@ public class SAXParser {
 
     public SAXParser(String Address) throws JDOMException, IOException {
         inputFile = new File(Address);
-        if (!inputFile.exists())
+        if (inputFile.exists()) {
+            saxBuilder = new SAXBuilder();
+            document = saxBuilder.build(inputFile);
+            if (!document.getRootElement().getName().equals("Setting"))
+                throw new IOException("Dont match Setting.xml");
+            classElement = document.getRootElement();
+        } else {
             inputFile.createNewFile();
+            document = new Document();
+            classElement = new Element("Setting");
+        }
     }
 
     public void makeXML(Vector<String> shisheTypeList) {
         try {
-            document = new Document();
-            document.setRootElement(new Element("Setting"));
-            addShisheList(shisheTypeList);
-
+            classElement.removeChild("GlassTypes");
+            Element glassTypes = new Element("GlassTypes");
+            shisheTypeList.forEach(v -> {
+                Element item = new Element("Item");
+                item.setText(v);
+                glassTypes.addContent(item);
+            });
+            classElement.addContent(glassTypes);
             Format format = Format.getPrettyFormat();
             format.setEncoding("UTF-8");
             XMLOutputter xmlOutput = new XMLOutputter(format);
             xmlOutput.output(document, new FileOutputStream(inputFile.getAbsolutePath()));
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,14 +56,15 @@ public class SAXParser {
 
     public void makeXML(String file, String title) {
         try {
-            document = new Document();
-            document.setRootElement(new Element("LabelType"));
+            classElement.removeChild("LabelType");
+            Element root = new Element("LabelType");
             Element fileAdress = new Element("LabelFileAdress");
             fileAdress.setText(file);
-            document.getRootElement().addContent(fileAdress);
+            root.addContent(fileAdress);
             Element labelTitle = new Element("LabelTitle");
             labelTitle.setText(title);
-            document.getRootElement().addContent(labelTitle);
+            root.addContent(labelTitle);
+            classElement.addContent(root);
             Format format = Format.getPrettyFormat();
             format.setEncoding("UTF-8");
             XMLOutputter xmlOutput = new XMLOutputter(format);
@@ -62,76 +75,78 @@ public class SAXParser {
         }
     }
 
-    private void addShisheList(Vector<String> shisheTypeList) {
-        Element glassTypes = new Element("GlassTypes");
-        document.getRootElement().addContent(glassTypes);
-        Element[] glassTypess = new Element[shisheTypeList.size()];
-        for (int i = 0; i < glassTypess.length; i++) {
-            glassTypess[i] = new Element("Item");
-            glassTypess[i].setText(shisheTypeList.get(i));
-            glassTypes.addContent(glassTypess[i]);
-        }
-    }
+    public void makeXML(Double[][] noneStandarList) {
+        try {
+            classElement.removeChild("NoneStandard");
+            Element root = new Element("NoneStandard");
+            Element less = new Element("Less");
+            if (noneStandarList[0] == null)
+                less.setAttribute("active", "false");
+            else if (noneStandarList[0].length == 1) {
+                less.setAttribute("active", "true");
+                Element metrazh = new Element("metrazh");
+                metrazh.setText(String.valueOf(noneStandarList[1][0]));
+                less.addContent(metrazh);
+            } else if (noneStandarList[0].length == 2) {
+                less.setAttribute("active", "true");
+                Element arz = new Element("arz");
+                arz.setText(String.valueOf(noneStandarList[1][0]));
+                Element tul = new Element("tul");
+                tul.setText(String.valueOf(noneStandarList[1][1]));
+                less.addContent(arz);
+                less.addContent(tul);
+            }
+            root.addContent(less);
 
+            Element more = new Element("More");
+            if (noneStandarList[1] == null)
+                more.setAttribute("active", "false");
+            else if (noneStandarList[1].length == 1) {
+                more.setAttribute("active", "true");
+                Element metrazh = new Element("metrazh");
+                metrazh.setText(String.valueOf(noneStandarList[1][0]));
+                more.addContent(metrazh);
+            } else if (noneStandarList[1].length == 2) {
+                more.setAttribute("active", "true");
+                Element arz = new Element("arz");
+                arz.setText(String.valueOf(noneStandarList[1][0]));
+                Element tul = new Element("tul");
+                tul.setText(String.valueOf(noneStandarList[1][1]));
+                more.addContent(arz);
+                more.addContent(tul);
+            }
+            root.addContent(more);
+            classElement.addContent(root);
+            Format format = Format.getPrettyFormat();
+            format.setEncoding("UTF-8");
+            XMLOutputter xmlOutput = new XMLOutputter(format);
+            xmlOutput.output(document, new FileOutputStream(inputFile.getAbsolutePath()));
 
-    public boolean convert() throws JDOMException, IOException {
-        saxBuilder = new SAXBuilder();
-        document = saxBuilder.build(inputFile);
-        if (!document.getRootElement().getName().equals("Setting")) {
-            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        classElement = document.getRootElement();
-        List<Element> itemList = classElement.getChildren();
-        if (itemList.isEmpty()) {
-            return false;
-        }
-        if (classElement.getChild("GlassTypes") == null) {
-            return false;
-        }
-        return true;
     }
 
     public Vector<String> getList() {
         List<Element> glassTypes = classElement.getChild("GlassTypes").getChildren();
         Vector<String> temp = new Vector<>();
-        for (Element alp : glassTypes) {
-            temp.addElement(alp.getValue());
-        }
+        glassTypes.forEach(e -> temp.addElement(e.getValue()));
         return temp;
     }
 
-
     public String getLastPrint() {
-        saxBuilder = new SAXBuilder();
-        try {
-            document = saxBuilder.build(inputFile);
-            if (!document.getRootElement().getName().equals("LabelType")) {
-                return "";
-            }
-            classElement = document.getRootElement();
-            if (classElement.getChild("LabelFileAdress") == null) {
-                return "";
-            }
-            return classElement.getChild("LabelFileAdress").getText();
-        } catch (Exception e) {
+        Element root = classElement.getChild("LabelType");
+        if (root.getChild("LabelFileAdress") == null) {
             return "";
         }
+        return root.getChild("LabelFileAdress").getText();
     }
 
     public String getLastTitle() {
-        saxBuilder = new SAXBuilder();
-        try {
-            document = saxBuilder.build(inputFile);
-            if (!document.getRootElement().getName().equals("LabelType")) {
-                return "";
-            }
-            classElement = document.getRootElement();
-            if (classElement.getChild("LabelTitle") == null) {
-                return "";
-            }
-            return classElement.getChild("LabelTitle").getText();
-        } catch (Exception e) {
+        Element root = classElement.getChild("LabelType");
+        if (root.getChild("LabelTitle") == null) {
             return "";
         }
+        return root.getChild("LabelTitle").getText();
     }
 }

@@ -18,8 +18,11 @@
         <Item>برنزه فلوت 6 میل</Item>
     </GlassTypes>
     <LabelType>
-        <LabelFile></LabelFile>
-        <PrinterName></PrinterName>
+        <LabelFileAdress></LabelFileAdress>
         <LabelTitle></LabelTitle>
     </LabelType>
+    <NoneStandard>
+        <Less active="false"></Less>
+        <More active="false"></More>
+    </NoneStandard>
 </Setting>

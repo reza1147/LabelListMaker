@@ -20,6 +20,7 @@ import java.util.Vector;
 public class Setting extends JFrame {
 
     private MainFrame parent;
+    private Setting me;
     private boolean anyThingChange, saveChangesB;
     private JButton saveChanges, cansel;
     private Font defaultFont;
@@ -40,7 +41,136 @@ public class Setting extends JFrame {
 
     // NonStandardTab Components start
     private JPanel noneStandardPanel;
+    private JTextField metrazhTxt1, arzTxt1, tulTxt1, metrazhTxt2, arzTxt2, tulTxt2;
+    private JRadioButton none1, metrazh1, abaad1, none2, metrazh2, abaad2;
     // NonStandardTab Components end
+
+    public Setting(Component parent) throws HeadlessException {
+        super("تنظیمات");
+        this.parent = (MainFrame) parent;
+        this.me = this;
+        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setLayout(new BorderLayout());
+        setSize(600, 600);
+        anyThingChange = false;
+        saveChangesB = false;
+        defaultFont = new Font("tahoma", Font.PLAIN, 20);
+        setMinimumSize(new Dimension(600, 600));
+        setResizable(false);
+        setLocationRelativeTo(parent);
+        setExtendedState(Frame.MAXIMIZED_BOTH);
+        setLayout(new BorderLayout(5, 5));
+        getRootPane().setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, this.getBackground()));
+        JTabbedPane tempTab = new JTabbedPane(SwingConstants.TOP);
+        JPanel tempPanel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+
+        URL iconURL = getClass().getResource("/setting.png");
+        ImageIcon icon = new ImageIcon(iconURL);
+        setIconImage(icon.getImage());
+
+        buttonListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (checkNoneStandardForm()) {
+                    JOptionPane.showMessageDialog(me, "ابتدا خطا ها را اصلاح کنید!!", "خطا", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    if (e.getSource().equals(saveChanges)) {
+                        saveChangesB = true;
+                    }
+                    dispose();
+                }
+            }
+        };
+
+        saveChanges = new JButton("ذخیره تغییرات");
+        saveChanges.setFont(defaultFont);
+        saveChanges.setPreferredSize(new Dimension(185, 50));
+        saveChanges.addActionListener(buttonListener);
+        tempPanel1.add(saveChanges);
+
+        cansel = new JButton("لغو");
+        cansel.setFont(defaultFont);
+        cansel.setPreferredSize(new Dimension(185, 50));
+        cansel.addActionListener(buttonListener);
+        tempPanel1.add(cansel);
+
+
+        initListPanel();
+        initNoneStandardPanel();
+        initAboutPanel();
+
+        tempTab.add("لیست شیشه ها", listPanel);
+        tempTab.add("خارج استاندارد", noneStandardPanel);
+        tempTab.add("درباره نرم افزار", aboutPanel);
+        tempTab.setFont(defaultFont);
+
+
+        add(tempPanel1, BorderLayout.SOUTH);
+        add(tempTab, BorderLayout.CENTER);
+
+
+        addWindowListener(new WindowAdapter() {
+
+            @Override
+            public void windowLostFocus(WindowEvent e) {
+                super.windowLostFocus(e);
+                parent.requestFocus();
+            }
+
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                super.windowClosing(e);
+                parent.requestFocus();
+            }
+
+            @Override
+            public void windowClosed(WindowEvent e) {
+                super.windowClosed(e);
+                if (anyThingChange) {
+                    Vector<String> newShisheList = new Vector<String>();
+                    for (int i = 0; i < list.getSize(); i++)
+                        newShisheList.addElement(list.get(i));
+                    if (saveChangesB)
+                        firePropertyChange("listShishe", ((MainFrame) parent).getListShishe(), newShisheList);
+                    else {
+                        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+                        panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                        panel.setPreferredSize(new Dimension(350, 35));
+
+                        JLabel label = new JLabel("تغییرات را ذخیره می کنید؟");
+                        label.setFont(defaultFont);
+                        label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                        label.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                        label.setPreferredSize(new Dimension(350, 35));
+                        panel.add(label);
+
+                        String[] options = {"Yes", "No"};
+                        JOptionPane myPane = new JOptionPane();
+                        myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
+                        myPane.setMessage(panel);
+                        myPane.setOptions(options);
+                        myPane.setInitialValue("Yes");
+                        myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                        JDialog myDialog = myPane.createDialog(parent, "حذف کردن شیشه");
+                        myDialog.setVisible(true);
+                        Object answer = myPane.getValue();
+                        if (answer.equals("Yes"))
+                            firePropertyChange("listShishe", ((MainFrame) parent).getListShishe(), newShisheList);
+                    }
+                }
+                if (saveChangesB)
+                    firePropertyChange("NoneStandard",
+                            null,
+                            getNoneStandard());
+                parent.setEnabled(true);
+                parent.requestFocus();
+
+            }
+        });
+        setVisible(true);
+
+    }
 
     // infoPanel Components initializer
     private void initListPanel() {
@@ -241,122 +371,6 @@ public class Setting extends JFrame {
         listPanel.add(tempPanel1, BorderLayout.WEST);
     }
 
-    public Setting(Component parent) throws HeadlessException {
-        super("تنظیمات");
-        this.parent = (MainFrame) parent;
-        setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
-        setLayout(new BorderLayout());
-        setSize(600, 600);
-        anyThingChange = false;
-        saveChangesB = false;
-        defaultFont = new Font("tahoma", Font.PLAIN, 20);
-        setMinimumSize(new Dimension(600, 600));
-        setResizable(false);
-        setLocationRelativeTo(parent);
-        setExtendedState(Frame.MAXIMIZED_BOTH);
-        setLayout(new BorderLayout(5, 5));
-        getRootPane().setBorder(BorderFactory.createMatteBorder(5, 5, 5, 5, this.getBackground()));
-        JTabbedPane tempTab = new JTabbedPane(SwingConstants.TOP);
-        JPanel tempPanel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-
-        URL iconURL = getClass().getResource("/setting.png");
-        ImageIcon icon = new ImageIcon(iconURL);
-        setIconImage(icon.getImage());
-
-        buttonListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (e.getSource().equals(saveChanges)) {
-                    saveChangesB = true;
-                }
-                dispose();
-            }
-        };
-
-        saveChanges = new JButton("ذخیره تغییرات");
-        saveChanges.setFont(defaultFont);
-        saveChanges.setPreferredSize(new Dimension(185, 50));
-        saveChanges.addActionListener(buttonListener);
-        tempPanel1.add(saveChanges);
-
-        cansel = new JButton("لغو");
-        cansel.setFont(defaultFont);
-        cansel.setPreferredSize(new Dimension(185, 50));
-        cansel.addActionListener(buttonListener);
-        tempPanel1.add(cansel);
-
-
-        initListPanel();
-        initNoneStandardPanel();
-        initAboutPanel();
-
-        tempTab.add("لیست شیشه ها", listPanel);
-        tempTab.add("خارج استاندارد", noneStandardPanel);
-        tempTab.add("درباره نرم افزار", aboutPanel);
-        tempTab.setFont(defaultFont);
-
-
-        add(tempPanel1, BorderLayout.SOUTH);
-        add(tempTab, BorderLayout.CENTER);
-
-
-        addWindowListener(new WindowAdapter() {
-
-            @Override
-            public void windowLostFocus(WindowEvent e) {
-                super.windowLostFocus(e);
-                parent.requestFocus();
-            }
-
-
-            @Override
-            public void windowClosing(WindowEvent e) {
-                super.windowClosing(e);
-                parent.requestFocus();
-            }
-
-            @Override
-            public void windowClosed(WindowEvent e) {
-                super.windowClosed(e);
-                if (anyThingChange) {
-                    Vector<String> newShisheList = new Vector<String>();
-                    for (int i = 0; i < list.getSize(); i++)
-                        newShisheList.addElement(list.get(i));
-                    if (saveChangesB)
-                        firePropertyChange("listShishe", ((MainFrame) parent).getListShishe(), newShisheList);
-                    else {
-                        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-                        panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                        panel.setPreferredSize(new Dimension(350, 35));
-
-                        JLabel label = new JLabel("تغییرات را ذخیره می کنید؟");
-                        label.setFont(defaultFont);
-                        label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                        label.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                        label.setPreferredSize(new Dimension(350, 35));
-                        panel.add(label);
-
-                        String[] options = {"Yes", "No"};
-                        JOptionPane myPane = new JOptionPane();
-                        myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
-                        myPane.setMessage(panel);
-                        myPane.setOptions(options);
-                        myPane.setInitialValue("Yes");
-                        myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                        JDialog myDialog = myPane.createDialog(parent, "حذف کردن شیشه");
-                        myDialog.setVisible(true);
-                        Object answer = myPane.getValue();
-                        if (answer.equals("Yes"))
-                            firePropertyChange("listShishe", ((MainFrame) parent).getListShishe(), newShisheList);
-                    }
-                }
-                parent.setEnabled(true);
-                parent.requestFocus();
-            }
-        });
-        setVisible(true);
-    }
-
     private void initNoneStandardPanel() {
         noneStandardPanel = new JPanel(new GridBagLayout());
 
@@ -375,17 +389,17 @@ public class Setting extends JFrame {
         lessThanStandard.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 
-        JRadioButton none1 = new JRadioButton("خاموش");
+        none1 = new JRadioButton("خاموش");
         none1.setFont(defaultFont);
         none1.setSelected(true);
         none1.setActionCommand("none1");
 
 
-        JRadioButton metrazh1 = new JRadioButton("بر اساس متراژ");
+        metrazh1 = new JRadioButton("بر اساس متراژ");
         metrazh1.setFont(defaultFont);
         metrazh1.setActionCommand("metrazh2");
 
-        JRadioButton abaad1 = new JRadioButton("بر اساس ابعاد");
+        abaad1 = new JRadioButton("بر اساس ابعاد");
         abaad1.setFont(defaultFont);
         abaad1.setActionCommand("abaad2");
 
@@ -395,21 +409,21 @@ public class Setting extends JFrame {
         bg.add(abaad1);
 
 
-        JTextField metrazhTxt1 = new JTextField();
+        metrazhTxt1 = new JTextField();
         metrazhTxt1.setFont(defaultFont);
         metrazhTxt1.setPreferredSize(new Dimension(100, 30));
         metrazhTxt1.setUI(new HintTextFieldUI("متراژ", true, Color.GRAY));
         parent.addIsListener(metrazhTxt1, Double.MIN_VALUE);
         metrazhTxt1.setEnabled(false);
 
-        JTextField arzTxt1 = new JTextField();
+        arzTxt1 = new JTextField();
         arzTxt1.setFont(defaultFont);
         arzTxt1.setPreferredSize(new Dimension(100, 30));
         arzTxt1.setUI(new HintTextFieldUI("عرض", true, Color.GRAY));
         parent.addIsListener(arzTxt1, Double.MIN_VALUE);
         arzTxt1.setEnabled(false);
 
-        JTextField tulTxt1 = new JTextField();
+        tulTxt1 = new JTextField();
         tulTxt1.setFont(defaultFont);
         tulTxt1.setPreferredSize(new Dimension(100, 30));
         tulTxt1.setUI(new HintTextFieldUI("طول", true, Color.GRAY));
@@ -500,17 +514,17 @@ public class Setting extends JFrame {
         moreThanStandard.setAlignmentX(Component.LEFT_ALIGNMENT);
 
 
-        JRadioButton none2 = new JRadioButton("خاموش");
+        none2 = new JRadioButton("خاموش");
         none2.setFont(defaultFont);
         none2.setSelected(true);
         none2.setActionCommand("none2");
 
 
-        JRadioButton metrazh2 = new JRadioButton("بر اساس متراژ");
+        metrazh2 = new JRadioButton("بر اساس متراژ");
         metrazh2.setFont(defaultFont);
         metrazh2.setActionCommand("metrazh2");
 
-        JRadioButton abaad2 = new JRadioButton("بر اساس ابعاد");
+        abaad2 = new JRadioButton("بر اساس ابعاد");
         abaad2.setFont(defaultFont);
         abaad2.setActionCommand("abaad2");
 
@@ -520,21 +534,21 @@ public class Setting extends JFrame {
         bg2.add(abaad2);
 
 
-        JTextField metrazhTxt2 = new JTextField();
+        metrazhTxt2 = new JTextField();
         metrazhTxt2.setFont(defaultFont);
         metrazhTxt2.setPreferredSize(new Dimension(100, 30));
         metrazhTxt2.setUI(new HintTextFieldUI("متراژ", true, Color.GRAY));
         parent.addIsListener(metrazhTxt2, Double.MIN_VALUE);
         metrazhTxt2.setEnabled(false);
 
-        JTextField arzTxt2 = new JTextField();
+        arzTxt2 = new JTextField();
         arzTxt2.setFont(defaultFont);
         arzTxt2.setPreferredSize(new Dimension(100, 30));
         arzTxt2.setUI(new HintTextFieldUI("عرض", true, Color.GRAY));
         parent.addIsListener(arzTxt2, Double.MIN_VALUE);
         arzTxt2.setEnabled(false);
 
-        JTextField tulTxt2 = new JTextField();
+        tulTxt2 = new JTextField();
         tulTxt2.setFont(defaultFont);
         tulTxt2.setPreferredSize(new Dimension(100, 30));
         tulTxt2.setUI(new HintTextFieldUI("طول", true, Color.GRAY));
@@ -625,6 +639,41 @@ public class Setting extends JFrame {
         gc3.weighty = 1;
         gc3.fill = GridBagConstraints.NONE;
         noneStandardPanel.add(moreThanStandard, gc3);
+    }
+
+    private Boolean checkNoneStandardForm() {
+        Boolean checkFlag = false;
+        if (metrazh1.isSelected())
+            checkFlag |= parent.checkIs(metrazhTxt1, Double.MIN_VALUE);
+        else if (abaad1.isSelected())
+            checkFlag |= parent.checkIs(tulTxt1, Double.MIN_VALUE)
+                    | parent.checkIs(arzTxt1, Double.MIN_VALUE);
+        if (metrazh2.isSelected())
+            checkFlag |= parent.checkIs(metrazhTxt2, Double.MIN_VALUE);
+        else if (abaad2.isSelected())
+            checkFlag |= parent.checkIs(tulTxt2, Double.MIN_VALUE)
+                    | parent.checkIs(arzTxt2, Double.MIN_VALUE);
+        return checkFlag;
+    }
+
+    private Double[][] getNoneStandard() {
+        Double[][] noneStandard = new Double[2][];
+        if (none1.isSelected())
+            noneStandard[0] = null;
+        else if (metrazh1.isSelected())
+            noneStandard[0] = new Double[]{Double.parseDouble(metrazhTxt1.getText())};
+        else if (abaad1.isSelected())
+            noneStandard[0] = new Double[]{Double.parseDouble(arzTxt1.getText())
+                    , Double.parseDouble(tulTxt1.getText())};
+
+        if (none2.isSelected())
+            noneStandard[1] = null;
+        else if (metrazh2.isSelected())
+            noneStandard[1] = new Double[]{Double.parseDouble(metrazhTxt2.getText())};
+        else if (abaad2.isSelected())
+            noneStandard[1] = new Double[]{Double.parseDouble(arzTxt2.getText())
+                    , Double.parseDouble(tulTxt2.getText())};
+        return noneStandard;
     }
 
     private void initAboutPanel() {

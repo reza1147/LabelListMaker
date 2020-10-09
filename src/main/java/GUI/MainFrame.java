@@ -830,6 +830,7 @@ public class MainFrame extends JFrame {
         try {
             SAXParser temp = new SAXParser(f.getAbsolutePath());
             syncListShishe(temp.getList());
+            syncNoneStandards(temp.getNoneStandards());
         } catch (JDOMException e) {
             JOptionPane.showMessageDialog(null, "فایل تنظیمات دچار مشکل شده است! آن را پاک کنید.", "خطا", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {

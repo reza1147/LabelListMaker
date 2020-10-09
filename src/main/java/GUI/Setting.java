@@ -149,7 +149,7 @@ public class Setting extends JFrame {
                         myPane.setOptions(options);
                         myPane.setInitialValue("Yes");
                         myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                        JDialog myDialog = myPane.createDialog(parent, "حذف کردن شیشه");
+                        JDialog myDialog = myPane.createDialog(parent, "ذخیره تغییرات");
                         myDialog.setVisible(true);
                         Object answer = myPane.getValue();
                         if (answer.equals("Yes"))

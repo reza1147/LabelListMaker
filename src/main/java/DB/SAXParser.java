@@ -134,6 +134,30 @@ public class SAXParser {
         return temp;
     }
 
+    public Double[][] getNoneStandards() {
+        Double[][] noneStandard = new Double[2][];
+        Element root = classElement.getChild("NoneStandard");
+        Element less = root.getChild("Less");
+        if (!Boolean.parseBoolean(less.getAttributeValue("active")))
+            noneStandard[0] = null;
+        else if (less.getChildren().size()==1)
+            noneStandard[0] = new Double[]{Double.parseDouble(less.getChild("metrazh").getText())};
+        else if (less.getChildren().size()==2)
+            noneStandard[0] = new Double[]{Double.parseDouble(less.getChild("arz").getText())
+                    , Double.parseDouble(less.getChild("tul").getText())};
+
+        Element more = root.getChild("More");
+        if (!Boolean.parseBoolean(more.getAttributeValue("active")))
+            noneStandard[1] = null;
+        else if (more.getChildren().size()==1)
+            noneStandard[1] = new Double[]{Double.parseDouble(more.getChild("metrazh").getText())};
+        else if (more.getChildren().size()==2)
+            noneStandard[1] = new Double[]{Double.parseDouble(more.getChild("arz").getText())
+                    , Double.parseDouble(more.getChild("tul").getText())};
+
+        return noneStandard;
+    }
+
     public String getLastPrint() {
         Element root = classElement.getChild("LabelType");
         if (root.getChild("LabelFileAdress") == null) {

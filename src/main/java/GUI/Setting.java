@@ -152,8 +152,9 @@ public class Setting extends JFrame {
                         JDialog myDialog = myPane.createDialog(parent, "ذخیره تغییرات");
                         myDialog.setVisible(true);
                         Object answer = myPane.getValue();
-                        if (answer.equals("Yes"))
-                            firePropertyChange("listShishe", ((MainFrame) parent).getListShishe(), newShisheList);
+                        if (answer != null)
+                            if (answer.equals("Yes"))
+                                firePropertyChange("listShishe", ((MainFrame) parent).getListShishe(), newShisheList);
                     }
                 }
                 if (saveChangesB)
@@ -226,10 +227,20 @@ public class Setting extends JFrame {
                 temp.setFont(defaultFont);
                 temp.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
                 temp.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                temp.setPreferredSize(new Dimension(290, 35));
+                temp.setPreferredSize(new Dimension(190, 35));
+
+                JTextField thickness = new JTextField("");
+                thickness.setFont(defaultFont);
+                thickness.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                thickness.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                thickness.setPreferredSize(new Dimension(90, 35));
+                thickness.setUI(new HintTextFieldUI("ضخامت", true));
+
 
                 panel.add(label);
                 panel.add(temp);
+                panel.add(thickness);
+
                 String[] options = {"Yes", "No"};
                 JOptionPane myPane = new JOptionPane();
                 myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
@@ -242,7 +253,10 @@ public class Setting extends JFrame {
                 Object answer = myPane.getValue();
                 if (answer != null)
                     if (answer.equals("Yes"))
-                        list.addElement(temp.getText());
+                        if (thickness.getText().isEmpty())
+                            list.addElement(temp.getText());
+                        else
+                            list.addElement(temp.getText() + " " + thickness.getText() + " میل");
             } else if (e.getSource().equals(delete)) {
                 JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
                 panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -278,14 +292,31 @@ public class Setting extends JFrame {
                 label.setAlignmentX(Component.RIGHT_ALIGNMENT);
                 label.setPreferredSize(new Dimension(290, 35));
 
-                JTextField temp = new JTextField(list.get(shisheList.getSelectedIndex()));
+                String str = list.get(shisheList.getSelectedIndex());
+                String strGlass = str;
+                String strThickness = "";
+                if (str.contains("میل")) {
+                    strGlass = str.substring(0, str.lastIndexOf(" "));
+                    strGlass = strGlass.substring(0, strGlass.lastIndexOf(" "));
+                    strThickness = str.replace(strGlass, "").replace("میل", "").trim();
+                }
+                JTextField temp = new JTextField(strGlass);
                 temp.setFont(defaultFont);
                 temp.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
                 temp.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                temp.setPreferredSize(new Dimension(290, 35));
+                temp.setPreferredSize(new Dimension(190, 35));
+
+                JTextField thickness = new JTextField(strThickness);
+                thickness.setFont(defaultFont);
+                thickness.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                thickness.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                thickness.setPreferredSize(new Dimension(90, 35));
+                thickness.setUI(new HintTextFieldUI("ضخامت", true));
 
                 panel.add(label);
                 panel.add(temp);
+                panel.add(thickness);
+
                 String[] options = {"Yes", "No"};
                 JOptionPane myPane = new JOptionPane();
                 myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
@@ -296,8 +327,12 @@ public class Setting extends JFrame {
                 JDialog myDialog = myPane.createDialog(((JButton) e.getSource()).getParent(), "تغییر در نام شیشه");
                 myDialog.setVisible(true);
                 Object answer = myPane.getValue();
-                if (answer.equals("Yes"))
-                    list.setElementAt(temp.getText(), shisheList.getSelectedIndex());
+                if (answer != null)
+                    if (answer.equals("Yes"))
+                        if (thickness.getText().isEmpty())
+                            list.setElementAt(temp.getText(), shisheList.getSelectedIndex());
+                        else
+                            list.setElementAt(temp.getText() + " " + thickness.getText() + " میل", shisheList.getSelectedIndex());
             }
         };
 

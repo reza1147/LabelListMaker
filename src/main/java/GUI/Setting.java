@@ -368,7 +368,7 @@ public class Setting extends JFrame {
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createEmptyBorder(5, 5, 5, 5),
                         BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false),
-                                "خارج استاندارد ریز بودن",
+                                "خارج استاندارد ابعاد ریز",
                                 TitledBorder.LEADING,
                                 TitledBorder.DEFAULT_POSITION,
                                 defaultFont,
@@ -493,7 +493,7 @@ public class Setting extends JFrame {
                 BorderFactory.createCompoundBorder(
                         BorderFactory.createEmptyBorder(5, 5, 5, 5),
                         BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.BLACK, 1, false),
-                                "خارج استاندارد بزرگ بودن",
+                                "خارج استاندارد ابعاد بزرگ",
                                 TitledBorder.LEADING,
                                 TitledBorder.DEFAULT_POSITION,
                                 defaultFont,

@@ -103,7 +103,7 @@ public class MainFrame extends JFrame {
         addToDB.addActionListener(buttonPanelListener);
         tempPanel1.add(addToDB);
 
-        clearDB = new JButton("حذف کامل داده ها");
+        clearDB = new JButton("حذف داده ها");
         clearDB.setFont(defaultFont);
         clearDB.setPreferredSize(new Dimension(185, 50));
         clearDB.addActionListener(buttonPanelListener);
@@ -314,7 +314,6 @@ public class MainFrame extends JFrame {
     // infoPanel Components initializer
     private void initListPanel() {
         listPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        listShishe = new Vector<>();
         Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(), noneStandarList));
         Lists.get(Lists.size() - 1).addPropertyChangeListener(aghlamListener);
         listPanel.add(Lists.get(Lists.size() - 1));

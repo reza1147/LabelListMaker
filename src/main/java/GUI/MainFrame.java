@@ -568,83 +568,85 @@ public class MainFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = lists.rowAtPoint(e.getPoint());
-                JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-                panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                panel.setPreferredSize(new Dimension(350, 35));
+                if (row < lists.getRowCount() && row >= 0) {
+                    JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+                    panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                    panel.setPreferredSize(new Dimension(350, 35));
 
-                JLabel label = new JLabel("عملیات مورد نظر خود را انتخاب کنید؟");
-                label.setFont(defaultFont);
-                label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                label.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                label.setPreferredSize(new Dimension(350, 35));
+                    JLabel label = new JLabel("عملیات مورد نظر خود را انتخاب کنید؟");
+                    label.setFont(defaultFont);
+                    label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                    label.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                    label.setPreferredSize(new Dimension(350, 35));
 
-                panel.add(label);
-                String[] options = {"تغییر در لیست", "حذف", "لغو"};
-                JOptionPane myPane = new JOptionPane();
-                myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
-                myPane.setMessage(panel);
-                myPane.setOptions(options);
-                myPane.setFont(defaultFont);
-                myPane.setInitialValue("لغو");
-                myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                JDialog myDialog = myPane.createDialog(me, "انتخاب عملیات");
-                myDialog.setVisible(true);
-                Object answer = myPane.getValue();
-                if (answer.equals("حذف")) {
-                    JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-                    panel1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    panel1.setPreferredSize(new Dimension(350, 35));
+                    panel.add(label);
+                    String[] options = {"تغییر در لیست", "حذف", "لغو"};
+                    JOptionPane myPane = new JOptionPane();
+                    myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
+                    myPane.setMessage(panel);
+                    myPane.setOptions(options);
+                    myPane.setFont(defaultFont);
+                    myPane.setInitialValue("لغو");
+                    myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                    JDialog myDialog = myPane.createDialog(me, "انتخاب عملیات");
+                    myDialog.setVisible(true);
+                    Object answer = myPane.getValue();
+                    if (answer.equals("حذف")) {
+                        JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+                        panel1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                        panel1.setPreferredSize(new Dimension(350, 35));
 
-                    JLabel label1 = new JLabel("آیا میخواهید لیست مورد نظر حذف شود؟");
-                    label1.setFont(defaultFont);
-                    label1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    label1.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                    label1.setPreferredSize(new Dimension(350, 35));
-                    panel1.add(label1);
+                        JLabel label1 = new JLabel("آیا میخواهید لیست مورد نظر حذف شود؟");
+                        label1.setFont(defaultFont);
+                        label1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                        label1.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                        label1.setPreferredSize(new Dimension(350, 35));
+                        panel1.add(label1);
 
-                    String[] options1 = {"Yes", "No"};
-                    JOptionPane myPane1 = new JOptionPane();
-                    myPane1.setMessageType(JOptionPane.ERROR_MESSAGE);
-                    myPane1.setMessage(panel1);
-                    myPane1.setOptions(options1);
-                    myPane1.setInitialValue("Yes");
-                    myPane1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    JDialog myDialog1 = myPane1.createDialog(me, "حذف کردن لیست");
-                    myDialog1.setVisible(true);
-                    Object answer1 = myPane1.getValue();
-                    if (answer1.equals("Yes")) {
-                        dataBaseManager.deleteOrder(Integer.parseInt(detail.get(row)[3]));
-                        syncDBList();
-                    }
-                } else if (answer.equals("تغییر در لیست")) {
-                    JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-                    panel1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    panel1.setPreferredSize(new Dimension(550, 35));
+                        String[] options1 = {"Yes", "No"};
+                        JOptionPane myPane1 = new JOptionPane();
+                        myPane1.setMessageType(JOptionPane.ERROR_MESSAGE);
+                        myPane1.setMessage(panel1);
+                        myPane1.setOptions(options1);
+                        myPane1.setInitialValue("Yes");
+                        myPane1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                        JDialog myDialog1 = myPane1.createDialog(me, "حذف کردن لیست");
+                        myDialog1.setVisible(true);
+                        Object answer1 = myPane1.getValue();
+                        if (answer1.equals("Yes")) {
+                            dataBaseManager.deleteOrder(Integer.parseInt(detail.get(row)[3]));
+                            syncDBList();
+                        }
+                    } else if (answer.equals("تغییر در لیست")) {
+                        JPanel panel1 = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+                        panel1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                        panel1.setPreferredSize(new Dimension(550, 35));
 
-                    JLabel label1 = new JLabel();
-                    if (changeMode)
-                        label1.setText("با این کار تغییرات در لیست باز ذخیره نمی شوند ادامه می دهید؟");
-                    else
-                        label1.setText("با این کار لیست ذخیره نشده حذف می شود ادامه می دهید؟");
-                    label1.setFont(defaultFont);
-                    label1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    label1.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                    label1.setPreferredSize(new Dimension(550, 35));
-                    panel1.add(label1);
+                        JLabel label1 = new JLabel();
+                        if (changeMode)
+                            label1.setText("با این کار تغییرات در لیست باز ذخیره نمی شوند ادامه می دهید؟");
+                        else
+                            label1.setText("با این کار لیست ذخیره نشده حذف می شود ادامه می دهید؟");
+                        label1.setFont(defaultFont);
+                        label1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                        label1.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                        label1.setPreferredSize(new Dimension(550, 35));
+                        panel1.add(label1);
 
-                    String[] options1 = {"Yes", "No"};
-                    JOptionPane myPane1 = new JOptionPane();
-                    myPane1.setMessageType(JOptionPane.ERROR_MESSAGE);
-                    myPane1.setMessage(panel1);
-                    myPane1.setOptions(options1);
-                    myPane1.setInitialValue("Yes");
-                    myPane1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    JDialog myDialog1 = myPane1.createDialog(me, "تغییر کردن لیست");
-                    myDialog1.setVisible(true);
-                    Object answer1 = myPane1.getValue();
-                    if (answer1.equals("Yes")) {
-                        System.out.println(detail.get(row)[3]);
-                        restoreList(Integer.parseInt(detail.get(row)[3]));
+                        String[] options1 = {"Yes", "No"};
+                        JOptionPane myPane1 = new JOptionPane();
+                        myPane1.setMessageType(JOptionPane.ERROR_MESSAGE);
+                        myPane1.setMessage(panel1);
+                        myPane1.setOptions(options1);
+                        myPane1.setInitialValue("Yes");
+                        myPane1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                        JDialog myDialog1 = myPane1.createDialog(me, "تغییر کردن لیست");
+                        myDialog1.setVisible(true);
+                        Object answer1 = myPane1.getValue();
+                        if (answer1.equals("Yes")) {
+                            System.out.println(detail.get(row)[3]);
+                            restoreList(Integer.parseInt(detail.get(row)[3]));
+                        }
                     }
                 }
             }
@@ -775,7 +777,6 @@ public class MainFrame extends JFrame {
         initButtonPanel();
         add(buttonPanel, BorderLayout.EAST);
         add(mainPanel, BorderLayout.CENTER);
-
 
 
         dataBaseManager = new DataBaseManager(homeDir);

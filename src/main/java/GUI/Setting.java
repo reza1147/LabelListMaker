@@ -4,7 +4,6 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -19,19 +18,17 @@ import java.util.Vector;
  */
 public class Setting extends JFrame {
 
-    private MainFrame parent;
-    private Setting me;
+    private final MainFrame parent;
+    private final Setting me;
     private boolean anyThingChange, saveChangesB;
-    private JButton saveChanges, cansel;
-    private Font defaultFont;
+    private final JButton saveChanges;
+    private final Font defaultFont;
 
     // listTab Components start
     private JPanel listPanel;
     private JButton up, down, delete, add, edit;
     private JList<String> shisheList;
     private DefaultListModel<String> list;
-    private ActionListener buttonPanelListener, buttonListener;
-    private ListSelectionListener listSelectionListener;
     // listTab Components end
 
     // AboutTab Components start
@@ -68,7 +65,7 @@ public class Setting extends JFrame {
         ImageIcon icon = new ImageIcon(iconURL);
         setIconImage(icon.getImage());
 
-        buttonListener = new ActionListener() {
+        ActionListener buttonListener = new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (checkNoneStandardForm()) {
@@ -88,7 +85,7 @@ public class Setting extends JFrame {
         saveChanges.addActionListener(buttonListener);
         tempPanel1.add(saveChanges);
 
-        cansel = new JButton("لغو");
+        JButton cansel = new JButton("لغو");
         cansel.setFont(defaultFont);
         cansel.setPreferredSize(new Dimension(185, 50));
         cansel.addActionListener(buttonListener);
@@ -128,7 +125,7 @@ public class Setting extends JFrame {
             public void windowClosed(WindowEvent e) {
                 super.windowClosed(e);
                 if (anyThingChange) {
-                    Vector<String> newShisheList = new Vector<String>();
+                    Vector<String> newShisheList = new Vector<>();
                     for (int i = 0; i < list.getSize(); i++)
                         newShisheList.addElement(list.get(i));
                     if (saveChangesB)
@@ -173,6 +170,7 @@ public class Setting extends JFrame {
     }
 
     // infoPanel Components initializer
+    @SuppressWarnings("unchecked")
     private void initListPanel() {
         listPanel = new JPanel(new BorderLayout(5, 5));
         listPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -180,20 +178,14 @@ public class Setting extends JFrame {
         JPanel tempPanel1 = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 5));
         tempPanel1.setPreferredSize(new Dimension(50, 330));
 
-        listSelectionListener = new ListSelectionListener() {
-            @Override
-            public void valueChanged(ListSelectionEvent e) {
-                if (((JList) e.getSource()).getSelectedIndex() != -1) {
+        ListSelectionListener listSelectionListener = e -> {
+            if (e.getSource() instanceof JList) {
+                JList<String> tempList = (JList<String>) e.getSource();
+                if (tempList.getSelectedIndex() != -1) {
                     edit.setEnabled(true);
                     delete.setEnabled(true);
-                    if (((JList) e.getSource()).getSelectedIndex() != 0)
-                        up.setEnabled(true);
-                    else
-                        up.setEnabled(false);
-                    if (((JList) e.getSource()).getSelectedIndex() != ((JList) e.getSource()).getLastVisibleIndex())
-                        down.setEnabled(true);
-                    else
-                        down.setEnabled(false);
+                    up.setEnabled(tempList.getSelectedIndex() != 0);
+                    down.setEnabled(tempList.getSelectedIndex() != tempList.getLastVisibleIndex());
                 } else {
                     edit.setEnabled(false);
                     delete.setEnabled(false);
@@ -203,112 +195,109 @@ public class Setting extends JFrame {
             }
         };
 
-        buttonPanelListener = new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                anyThingChange = true;
-                if (e.getSource().equals(up)) {
-                    int indexOfSelected = shisheList.getSelectedIndex();
-                    String tmp = list.get(indexOfSelected);
-                    list.setElementAt(list.get(indexOfSelected - 1), indexOfSelected);
-                    list.setElementAt(tmp, indexOfSelected - 1);
-                    indexOfSelected = indexOfSelected - 1;
-                    shisheList.setSelectedIndex(indexOfSelected);
-                } else if (e.getSource().equals(down)) {
-                    int indexOfSelected = shisheList.getSelectedIndex();
-                    String tmp = list.get(indexOfSelected);
-                    list.setElementAt(list.get(indexOfSelected + 1), indexOfSelected);
-                    list.setElementAt(tmp, indexOfSelected + 1);
-                    indexOfSelected = indexOfSelected + 1;
-                    shisheList.setSelectedIndex(indexOfSelected);
-                } else if (e.getSource().equals(add)) {
-                    JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-                    panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    panel.setPreferredSize(new Dimension(300, 80));
+        ActionListener buttonPanelListener = e -> {
+            anyThingChange = true;
+            if (e.getSource().equals(up)) {
+                int indexOfSelected = shisheList.getSelectedIndex();
+                String tmp = list.get(indexOfSelected);
+                list.setElementAt(list.get(indexOfSelected - 1), indexOfSelected);
+                list.setElementAt(tmp, indexOfSelected - 1);
+                indexOfSelected = indexOfSelected - 1;
+                shisheList.setSelectedIndex(indexOfSelected);
+            } else if (e.getSource().equals(down)) {
+                int indexOfSelected = shisheList.getSelectedIndex();
+                String tmp = list.get(indexOfSelected);
+                list.setElementAt(list.get(indexOfSelected + 1), indexOfSelected);
+                list.setElementAt(tmp, indexOfSelected + 1);
+                indexOfSelected = indexOfSelected + 1;
+                shisheList.setSelectedIndex(indexOfSelected);
+            } else if (e.getSource().equals(add)) {
+                JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+                panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                panel.setPreferredSize(new Dimension(300, 80));
 
-                    JLabel label = new JLabel("نام شیشه جدید را وارد کنید:");
-                    label.setFont(defaultFont);
-                    label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    label.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                    label.setPreferredSize(new Dimension(290, 35));
+                JLabel label = new JLabel("نام شیشه جدید را وارد کنید:");
+                label.setFont(defaultFont);
+                label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                label.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                label.setPreferredSize(new Dimension(290, 35));
 
-                    JTextField temp = new JTextField("");
-                    temp.setFont(defaultFont);
-                    temp.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    temp.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                    temp.setPreferredSize(new Dimension(290, 35));
+                JTextField temp = new JTextField("");
+                temp.setFont(defaultFont);
+                temp.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                temp.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                temp.setPreferredSize(new Dimension(290, 35));
 
-                    panel.add(label);
-                    panel.add(temp);
-                    String[] options = {"Yes", "No"};
-                    JOptionPane myPane = new JOptionPane();
-                    myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
-                    myPane.setMessage(panel);
-                    myPane.setOptions(options);
-                    myPane.setInitialValue("Yes");
-                    myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    JDialog myDialog = myPane.createDialog(((JButton) e.getSource()).getParent(), "اضافه کردن شیشه");
-                    myDialog.setVisible(true);
-                    Object answer = myPane.getValue();
-                    if (answer != null)
-                        if (answer.equals("Yes"))
-                            list.addElement(temp.getText());
-                } else if (e.getSource().equals(delete)) {
-                    JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-                    panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    panel.setPreferredSize(new Dimension(350, 35));
-
-                    JLabel label = new JLabel("از حذف کردن این مورد مطمئن هستید؟");
-                    label.setFont(defaultFont);
-                    label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    label.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                    label.setPreferredSize(new Dimension(350, 35));
-
-                    panel.add(label);
-                    String[] options = {"Yes", "No"};
-                    JOptionPane myPane = new JOptionPane();
-                    myPane.setMessageType(JOptionPane.ERROR_MESSAGE);
-                    myPane.setMessage(panel);
-                    myPane.setOptions(options);
-                    myPane.setInitialValue("Yes");
-                    myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    JDialog myDialog = myPane.createDialog(((JButton) e.getSource()).getParent(), "حذف کردن شیشه");
-                    myDialog.setVisible(true);
-                    Object answer = myPane.getValue();
+                panel.add(label);
+                panel.add(temp);
+                String[] options = {"Yes", "No"};
+                JOptionPane myPane = new JOptionPane();
+                myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
+                myPane.setMessage(panel);
+                myPane.setOptions(options);
+                myPane.setInitialValue("Yes");
+                myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                JDialog myDialog = myPane.createDialog(((JButton) e.getSource()).getParent(), "اضافه کردن شیشه");
+                myDialog.setVisible(true);
+                Object answer = myPane.getValue();
+                if (answer != null)
                     if (answer.equals("Yes"))
-                        list.remove(shisheList.getSelectedIndex());
-                } else if (e.getSource().equals(edit)) {
-                    JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
-                    panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    panel.setPreferredSize(new Dimension(300, 80));
+                        list.addElement(temp.getText());
+            } else if (e.getSource().equals(delete)) {
+                JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+                panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                panel.setPreferredSize(new Dimension(350, 35));
 
-                    JLabel label = new JLabel("نام شیشه جدید را وارد کنید:");
-                    label.setFont(defaultFont);
-                    label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    label.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                    label.setPreferredSize(new Dimension(290, 35));
+                JLabel label = new JLabel("از حذف کردن این مورد مطمئن هستید؟");
+                label.setFont(defaultFont);
+                label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                label.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                label.setPreferredSize(new Dimension(350, 35));
 
-                    JTextField temp = new JTextField(list.get(shisheList.getSelectedIndex()));
-                    temp.setFont(defaultFont);
-                    temp.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    temp.setAlignmentX(Component.RIGHT_ALIGNMENT);
-                    temp.setPreferredSize(new Dimension(290, 35));
+                panel.add(label);
+                String[] options = {"Yes", "No"};
+                JOptionPane myPane = new JOptionPane();
+                myPane.setMessageType(JOptionPane.ERROR_MESSAGE);
+                myPane.setMessage(panel);
+                myPane.setOptions(options);
+                myPane.setInitialValue("Yes");
+                myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                JDialog myDialog = myPane.createDialog(((JButton) e.getSource()).getParent(), "حذف کردن شیشه");
+                myDialog.setVisible(true);
+                Object answer = myPane.getValue();
+                if (answer.equals("Yes"))
+                    list.remove(shisheList.getSelectedIndex());
+            } else if (e.getSource().equals(edit)) {
+                JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 5));
+                panel.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                panel.setPreferredSize(new Dimension(300, 80));
 
-                    panel.add(label);
-                    panel.add(temp);
-                    String[] options = {"Yes", "No"};
-                    JOptionPane myPane = new JOptionPane();
-                    myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
-                    myPane.setMessage(panel);
-                    myPane.setOptions(options);
-                    myPane.setInitialValue("Yes");
-                    myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-                    JDialog myDialog = myPane.createDialog(((JButton) e.getSource()).getParent(), "تغییر در نام شیشه");
-                    myDialog.setVisible(true);
-                    Object answer = myPane.getValue();
-                    if (answer.equals("Yes"))
-                        list.setElementAt(temp.getText(), shisheList.getSelectedIndex());
-                }
+                JLabel label = new JLabel("نام شیشه جدید را وارد کنید:");
+                label.setFont(defaultFont);
+                label.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                label.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                label.setPreferredSize(new Dimension(290, 35));
+
+                JTextField temp = new JTextField(list.get(shisheList.getSelectedIndex()));
+                temp.setFont(defaultFont);
+                temp.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                temp.setAlignmentX(Component.RIGHT_ALIGNMENT);
+                temp.setPreferredSize(new Dimension(290, 35));
+
+                panel.add(label);
+                panel.add(temp);
+                String[] options = {"Yes", "No"};
+                JOptionPane myPane = new JOptionPane();
+                myPane.setMessageType(JOptionPane.QUESTION_MESSAGE);
+                myPane.setMessage(panel);
+                myPane.setOptions(options);
+                myPane.setInitialValue("Yes");
+                myPane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+                JDialog myDialog = myPane.createDialog(((JButton) e.getSource()).getParent(), "تغییر در نام شیشه");
+                myDialog.setVisible(true);
+                Object answer = myPane.getValue();
+                if (answer.equals("Yes"))
+                    list.setElementAt(temp.getText(), shisheList.getSelectedIndex());
             }
         };
 
@@ -642,11 +631,11 @@ public class Setting extends JFrame {
     }
 
     private Boolean checkNoneStandardForm() {
-        Boolean checkFlag = false;
+        boolean checkFlag = false;
         if (metrazh1.isSelected())
-            checkFlag |= parent.checkIs(metrazhTxt1, Double.MIN_VALUE);
+            checkFlag = parent.checkIs(metrazhTxt1, Double.MIN_VALUE);
         else if (abaad1.isSelected())
-            checkFlag |= parent.checkIs(tulTxt1, Double.MIN_VALUE)
+            checkFlag = parent.checkIs(tulTxt1, Double.MIN_VALUE)
                     | parent.checkIs(arzTxt1, Double.MIN_VALUE);
         if (metrazh2.isSelected())
             checkFlag |= parent.checkIs(metrazhTxt2, Double.MIN_VALUE);

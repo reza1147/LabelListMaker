@@ -108,23 +108,38 @@ public class AghlamPanel extends JPanel {
     }
 
     private void checkNoneStandard() {
+        int flag = 1;
         if (noneStandarList[0] == null) {
-            setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            flag *= 1;
         } else if (noneStandarList[0].length == 1) {
             if (getSingleMetrazh() / 10000 < noneStandarList[0][0])
-                setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
+                flag *= 2;
         } else if (noneStandarList[0].length == 2) {
             if (getArz() < noneStandarList[0][0] || getTul() < noneStandarList[0][1])
-                setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
+                flag *= 2;
         }
         if (noneStandarList[1] == null) {
-            setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+            flag *= 1;
         } else if (noneStandarList[1].length == 1) {
             if (getSingleMetrazh() / 10000 > noneStandarList[1][0])
-                setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+                flag *= 3;
         } else if (noneStandarList[1].length == 2) {
             if (getArz() > noneStandarList[1][0] || getTul() > noneStandarList[1][1])
+                flag *= 3;
+        }
+        switch (flag) {
+            case 1:
+                setBorder(BorderFactory.createEmptyBorder(2, 2, 2, 2));
+                break;
+            case 2:
+                setBorder(BorderFactory.createLineBorder(Color.GREEN, 2));
+                break;
+            case 3:
                 setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
+                break;
+            case 6:
+                setBorder(BorderFactory.createLineBorder(Color.MAGENTA, 2));
+                break;
         }
     }
 
@@ -218,12 +233,12 @@ public class AghlamPanel extends JPanel {
     }
 
     private void syncToolTip() {
-        String color="black";
-        if(getRizMetrazh()>0)
-            color="green";
-        else if(getBigMetrazh()>0)
-            color="blue";
-        String tip = String.format("<html><font size=\"6\" face=\"tahoma\" color=\"%s\">%f</font> </html>",color,getMetrazh());
+        String color = "black";
+        if (getRizMetrazh() > 0)
+            color = "green";
+        else if (getBigMetrazh() > 0)
+            color = "blue";
+        String tip = String.format("<html><font size=\"6\" face=\"tahoma\" color=\"%s\">%f</font> </html>", color, getMetrazh());
         zarb.setToolTipText(tip);
         khat.setToolTipText(tip);
         radif.setToolTipText(tip);

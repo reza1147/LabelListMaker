@@ -47,6 +47,7 @@ public class DataBaseManager {
                             .setRequired())
                     .addColumn(new ColumnBuilder("Name", DataType.TEXT))
                     .addColumn(new ColumnBuilder("Date", DataType.TEXT))
+                    .addColumn(new ColumnBuilder("hasCode", DataType.BOOLEAN))
                     .addColumn(new ColumnBuilder("metrazh", DataType.DOUBLE))
                     .addColumn(new ColumnBuilder("tedad", DataType.INT))
                     .toTable(db);
@@ -85,6 +86,7 @@ public class DataBaseManager {
                     .addColumn(new ColumnBuilder("Arz", DataType.DOUBLE))
                     .addColumn(new ColumnBuilder("Tul", DataType.DOUBLE))
                     .addColumn(new ColumnBuilder("Tedad", DataType.INT))
+                    .addColumn(new ColumnBuilder("Code", DataType.TEXT))
                     .toTable(db);
 
             Relationship rel3 = new RelationshipBuilder("TypeList", "SizeList")
@@ -105,6 +107,7 @@ public class DataBaseManager {
                     .addColumn(new ColumnBuilder("ARZ", DataType.TEXT))
                     .addColumn(new ColumnBuilder("TUL", DataType.TEXT))
                     .addColumn(new ColumnBuilder("TEDAD", DataType.INT))
+                    .addColumn(new ColumnBuilder("CODE", DataType.TEXT))
                     .toTable(db);
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,7 +117,6 @@ public class DataBaseManager {
 
     public void printListMaker(List<GlassBuyInfo> gbis, String title) {
         removeAllPrintList();
-        System.out.println(gbis);
         for (GlassBuyInfo gbi : gbis) {
             for (GlassType gt : gbi.getList()) {
                 for (Glass g : gt.getList()) {
@@ -129,7 +131,8 @@ public class DataBaseManager {
                                 gt.getGaz() ? "گاز آرگون" : "بدون گاز",
                                 g.getW() + "",
                                 g.getH() + "",
-                                g.getC()
+                                g.getC(),
+                                gbi.getHasCode() ? g.getCode() : "نوع گاز"
                         );
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -176,8 +179,8 @@ public class DataBaseManager {
 
     public List<GlassBuyInfo> getOrderList() {
         ArrayList<GlassBuyInfo> temp = new ArrayList<>();
-        for (Row r:OrderList){
-            temp.add(getOrderIformations(r.getInt("OrderID")));
+        for (Row r : OrderList) {
+            temp.add(getOrderInformation(r.getInt("OrderID")));
         }
 
         return temp;
@@ -217,14 +220,13 @@ public class DataBaseManager {
         }
     }
 
-
-    public GlassBuyInfo getOrderIformations(int orderID) {
+    public GlassBuyInfo getOrderInformation(int orderID) {
         try {
             Row row = CursorBuilder.findRowByPrimaryKey(OrderList, orderID);
             if (row != null) {
                 Object[] t = row.values().toArray();
-                GlassBuyInfo gbi = new GlassBuyInfo((String) t[1], new MyDate((String) t[2], false));
-                gbi.setList(getTypesIformations(orderID));
+                GlassBuyInfo gbi = new GlassBuyInfo((String) t[1], new MyDate((String) t[2], false), (Boolean) t[3]);
+                gbi.setList(getTypesInformation(orderID));
                 gbi.setID(orderID);
                 return gbi;
             }
@@ -234,7 +236,7 @@ public class DataBaseManager {
         return null;
     }
 
-    public List<GlassType> getTypesIformations(int orderID) {
+    public List<GlassType> getTypesInformation(int orderID) {
         try {
             ArrayList<GlassType> temp = new ArrayList<>();
             for (int i = 1; ; i++) {
@@ -242,7 +244,7 @@ public class DataBaseManager {
                 if (row != null) {
                     Object[] t = row.values().toArray();
                     temp.add(new GlassType((String) t[2], (String) t[3], ((Short) t[4]).intValue(), (boolean) t[5]));
-                    temp.get(temp.size() - 1).setList(getSizesIformations(orderID, i));
+                    temp.get(temp.size() - 1).setList(getSizesInformation(orderID, i));
                 } else
                     return temp;
             }
@@ -252,14 +254,14 @@ public class DataBaseManager {
         return null;
     }
 
-    public List<Glass> getSizesIformations(int orderID, int typeID) {
+    public List<Glass> getSizesInformation(int orderID, int typeID) {
         try {
             ArrayList<Glass> temp = new ArrayList<>();
             for (int i = 1; ; i++) {
                 Row row = CursorBuilder.findRowByPrimaryKey(SizeList, orderID, typeID, i);
                 if (row != null) {
                     Object[] t = row.values().toArray();
-                    temp.add(new Glass((double) t[3], (double) t[4], ((Short) t[5]).intValue()));
+                    temp.add(new Glass((double) t[3], (double) t[4], ((Short) t[5]).intValue(), (String) t[6]));
                 } else return temp;
             }
 
@@ -278,6 +280,7 @@ public class DataBaseManager {
                 r.put("Date", gbi.getDate().toString());
                 r.put("metrazh", gbi.getMetrazh());
                 r.put("tedad", gbi.getTedad());
+                r.put("hasCode", gbi.getHasCode());
                 OrderList.updateRow(r);
                 for (int i = 0; i < gbi.getList().size(); i++) {
                     GlassType gt = gbi.getList().get(i);
@@ -288,7 +291,7 @@ public class DataBaseManager {
                             gbi.getList().get(i).getGaz())[1];
                     int SizeID = 1;
                     for (Glass g : gbi.getList().get(i).getList()) {
-                        SizeList.addRow(changeID, TypeID, SizeID++, g.getW(), g.getH(), g.getC());
+                        SizeList.addRow(changeID, TypeID, SizeID++, g.getW(), g.getH(), g.getC(), g.getCode());
                     }
                 }
             }
@@ -299,7 +302,7 @@ public class DataBaseManager {
 
     public void addToDB(GlassBuyInfo gbi) {
         try {
-            int orderID = (int) OrderList.addRow(Column.AUTO_NUMBER, gbi.getCustomer(), gbi.getDate().toString(), gbi.getMetrazh(), gbi.getTedad())[0];
+            int orderID = (int) OrderList.addRow(Column.AUTO_NUMBER, gbi.getCustomer(), gbi.getDate().toString(), gbi.getHasCode(), gbi.getMetrazh(), gbi.getTedad())[0];
             for (int i = 0; i < gbi.getList().size(); i++) {
                 int TypeID = (int) TypeList.addRow(orderID, i + 1,
                         gbi.getList().get(i).getType1(),
@@ -308,7 +311,7 @@ public class DataBaseManager {
                         gbi.getList().get(i).getGaz())[1];
                 int SizeID = 1;
                 for (Glass g : gbi.getList().get(i).getList()) {
-                    SizeList.addRow(orderID, TypeID, SizeID++, g.getW(), g.getH(), g.getC());
+                    SizeList.addRow(orderID, TypeID, SizeID++, g.getW(), g.getH(), g.getC(), g.getCode());
                 }
             }
         } catch (IOException e) {
@@ -316,12 +319,4 @@ public class DataBaseManager {
         }
     }
 
-//    public static String reverseBySpace(String str) {
-//        String[] words = str.split("[\\s]+");
-//        String w = words[words.length - 1];
-//        for (int i = words.length - 2; i >= 0; i--) {
-//            w += " " + words[i];
-//        }
-//        return w;
-//    }
 }

@@ -34,6 +34,7 @@ public class ListPanel extends JPanel {
     private DefaultComboBoxModel<Integer> list3;
     private Integer numberR;
     private Double[][] noneStandarList;
+    private Boolean hasCode;
     // Listeners start
     private ActionListener listButtonPanelListener;
     private FocusListener listButtonPanelFocusListener;
@@ -41,9 +42,10 @@ public class ListPanel extends JPanel {
     private PropertyChangeListener aghlamListener;
     // Listeners end
 
-    public ListPanel(Font defaultFont, int newHeight, Vector<String> list, int number, Double[][] noneStandarList) {
+    public ListPanel(Font defaultFont, int newHeight, Vector<String> list, int number, Double[][] noneStandarList, Boolean hasCode) {
         super(new BorderLayout(5, 5));
         this.defaultFont = defaultFont;
+        this.hasCode = hasCode;
         ertefa = 40;
         numberR = number;
         this.noneStandarList = noneStandarList;
@@ -113,16 +115,18 @@ public class ListPanel extends JPanel {
             }
         };
         topPanel = new JPanel(new FlowLayout());
-        topPanel.setPreferredSize(new Dimension(250, 210));
+        topPanel.setPreferredSize(new Dimension(310, 210));
+        topPanel.setMaximumSize(new Dimension(310, 210));
+        topPanel.setMinimumSize(new Dimension(310, 210));
         botPanel = new JPanel(new FlowLayout());
-        botPanel.setPreferredSize(new Dimension(250, 39));
+        botPanel.setPreferredSize(new Dimension(310, 39));
 
         shishe1 = new JComboBox<>();
         shishe1.setFont(this.defaultFont);
         shishe1.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         ((JLabel) shishe1.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
         shishe1.setModel(this.list1);
-        shishe1.setPreferredSize(new Dimension(245, 30));
+        shishe1.setPreferredSize(new Dimension(305, 30));
         shishe1.setToolTipText("<html><font size=\"6\" face=\"tahoma\">نوع شیشه اول</font> </html>");
         shishe1.addFocusListener(scrollFocusListener);
         topPanel.add(shishe1);
@@ -132,7 +136,7 @@ public class ListPanel extends JPanel {
         shishe2.setFont(this.defaultFont);
         shishe2.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         ((JLabel) shishe2.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-        shishe2.setPreferredSize(new Dimension(245, 30));
+        shishe2.setPreferredSize(new Dimension(305, 30));
         shishe2.setModel(this.list2);
         shishe2.setToolTipText("<html><font size=\"6\" face=\"tahoma\">نوع شیشه دوم</font> </html>");
         shishe2.addFocusListener(scrollFocusListener);
@@ -144,7 +148,7 @@ public class ListPanel extends JPanel {
         spacer.setFont(this.defaultFont);
         spacer.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         ((JLabel) spacer.getRenderer()).setHorizontalAlignment(SwingConstants.CENTER);
-        spacer.setPreferredSize(new Dimension(70, 30));
+        spacer.setPreferredSize(new Dimension(100, 30));
         spacer.setModel(list3);
         list3.setSelectedItem(12);
         spacer.setToolTipText("<html><font size=\"6\" face=\"tahoma\">اسپیسر</font> </html>");
@@ -156,36 +160,35 @@ public class ListPanel extends JPanel {
         gaz = new JCheckBox("گاز آرگون", true);
         gaz.setFont(this.defaultFont);
         gaz.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        gaz.setPreferredSize(new Dimension(170, 30));
+        gaz.setPreferredSize(new Dimension(200, 30));
         gaz.setToolTipText("<html><font size=\"6\" face=\"tahoma\">گاز</font> </html>");
-        gaz.addFocusListener(scrollFocusListener);
         gaz.addFocusListener(scrollFocusListener);
 
         topPanel.add(gaz);
 
         metrazh = new JLabel("متراژ:1.00");
         metrazh.setFont(this.defaultFont);
-        metrazh.setPreferredSize(new Dimension(110, 30));
+        metrazh.setPreferredSize(new Dimension(150, 30));
         metrazh.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         topPanel.add(metrazh);
 
 
         metrazhRiz = new JLabel("ریز:0.00");
         metrazhRiz.setFont(this.defaultFont);
-        metrazhRiz.setPreferredSize(new Dimension(120, 30));
+        metrazhRiz.setPreferredSize(new Dimension(150, 30));
         metrazhRiz.setForeground(Color.MAGENTA);
         metrazhRiz.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         topPanel.add(metrazhRiz);
 
         tedad = new JLabel("تعداد:1");
         tedad.setFont(this.defaultFont);
-        tedad.setPreferredSize(new Dimension(110, 30));
+        tedad.setPreferredSize(new Dimension(150, 30));
         tedad.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         topPanel.add(tedad);
 
         metrazhBig = new JLabel("بزرگ:0.00");
         metrazhBig.setFont(this.defaultFont);
-        metrazhBig.setPreferredSize(new Dimension(120, 30));
+        metrazhBig.setPreferredSize(new Dimension(150, 30));
         metrazhBig.setForeground(Color.MAGENTA);
         metrazhBig.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         topPanel.add(metrazhBig);
@@ -224,7 +227,7 @@ public class ListPanel extends JPanel {
         topPanel.setFocusTraversalKeys(KeyboardFocusManager.FORWARD_TRAVERSAL_KEYS, newKeys);
 
         aghlams = new ArrayList<>();
-        aghlams.add(new AghlamPanel(1, this.defaultFont, noneStandarList));
+        aghlams.add(new AghlamPanel(1, this.defaultFont, noneStandarList, hasCode));
         aghlams.get(aghlams.size() - 1).addPropertyChangeListener(aghlamListener);
         botPanel.add(aghlams.get(aghlams.size() - 1));
         JScrollPane tablePanelPane = new JScrollPane(botPanel, ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -232,7 +235,7 @@ public class ListPanel extends JPanel {
         tablePanelPane.setBorder(new EmptyBorder(0, 0, 0, 0));
         tablePanelPane.setPreferredSize(new Dimension(250, 720));
         tablePanelPane.getVerticalScrollBar().setUnitIncrement(30);
-        setPreferredSize(new Dimension(250, newHeight));
+        setPreferredSize(new Dimension(315, newHeight));
         add(topPanel, BorderLayout.NORTH);
         add(tablePanelPane, BorderLayout.CENTER);
     }
@@ -354,19 +357,19 @@ public class ListPanel extends JPanel {
             syncTedad();
             botPanel.remove(aghlams.get(aghlams.size() - 1));
             aghlams.remove(aghlams.size() - 1);
-            botPanel.setPreferredSize(new Dimension(250, ertefa = ertefa - 44));
+            botPanel.setPreferredSize(new Dimension(310, ertefa = ertefa - 44));
             revalidate();
             repaint();
         }
         for (; newN > oldN; oldN++) {
-            aghlams.add(new AghlamPanel(aghlams.size() + 1, defaultFont, noneStandarList));
+            aghlams.add(new AghlamPanel(aghlams.size() + 1, defaultFont, noneStandarList, hasCode));
             aghlams.get(aghlams.size() - 1).addPropertyChangeListener(aghlamListener);
             botPanel.add(aghlams.get(aghlams.size() - 1));
             firePropertyChange("metrazh", null, null);
             firePropertyChange("tedad", null, null);
             syncMetrazh();
             syncTedad();
-            botPanel.setPreferredSize(new Dimension(250, ertefa = ertefa + 44));
+            botPanel.setPreferredSize(new Dimension(310, ertefa = ertefa + 44));
             revalidate();
             repaint();
         }
@@ -412,6 +415,12 @@ public class ListPanel extends JPanel {
         }
         syncMetrazh();
         syncTedad();
+    }
+
+    public void setCode(Boolean hasCode) {
+        this.hasCode = hasCode;
+        for (AghlamPanel lp : aghlams)
+            lp.setHasCode(hasCode);
     }
 
 }

@@ -57,6 +57,7 @@ public class MainFrame extends JFrame {
     // infoPanel Components start
     private JPanel datePanel, namePanel, infoPanel, listButtonPanel;
     private JTextField name, year, month, day, aghlam;
+    private JCheckBox haveCode;
     private JButton afzudan, kastan;
     private String tempAghlam;
     // infoPanel Components end
@@ -75,6 +76,7 @@ public class MainFrame extends JFrame {
 
     // Listeners start
     private ActionListener listButtonPanelListener;
+    private ActionListener codeButtonPanelListener;
     private ActionListener buttonPanelListener;
     private FocusListener listButtonPanelFocusListener;
     private ComponentListener listPanelSizeListener;
@@ -276,6 +278,15 @@ public class MainFrame extends JFrame {
         name.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
         namePanel.add(name, BorderLayout.CENTER);
 
+        haveCode = new JCheckBox("کد", false);
+        haveCode.setFont(this.defaultFont);
+        haveCode.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
+        haveCode.setPreferredSize(new Dimension(60, 30));
+        haveCode.addActionListener(codeButtonPanelListener);
+
+        namePanel.add(haveCode, BorderLayout.WEST);
+
+
         JLabel lblName = new JLabel("نام مشتری:");
         lblName.setFont(defaultFont);
         lblName.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
@@ -314,7 +325,7 @@ public class MainFrame extends JFrame {
     // infoPanel Components initializer
     private void initListPanel() {
         listPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(), noneStandarList));
+        Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(), noneStandarList, haveCode.isSelected()));
         Lists.get(Lists.size() - 1).addPropertyChangeListener(aghlamListener);
         listPanel.add(Lists.get(Lists.size() - 1));
         addWindowStateListener(listPanelStateListener);
@@ -447,6 +458,13 @@ public class MainFrame extends JFrame {
             }
         };
 
+        codeButtonPanelListener = new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                syncCode();
+            }
+        };
+
         aghlamListener = new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent e) {
@@ -538,7 +556,7 @@ public class MainFrame extends JFrame {
                 super.componentResized(e);
                 newHeight = (int) listPanelPane.getSize().getHeight() - 25;
                 for (ListPanel temp : Lists)
-                    temp.setPreferredSize(new Dimension(250, newHeight));
+                    temp.setPreferredSize(new Dimension(315, newHeight));
                 revalidate();
                 repaint();
             }
@@ -552,7 +570,7 @@ public class MainFrame extends JFrame {
                 if ((e.getNewState() & Frame.MAXIMIZED_BOTH) == Frame.MAXIMIZED_BOTH) {
                     newHeight = (int) listPanelPane.getMaximumSize().getHeight() - 25;
                     for (ListPanel temp : Lists)
-                        temp.setPreferredSize(new Dimension(250, newHeight));
+                        temp.setPreferredSize(new Dimension(315, newHeight));
                     revalidate();
                     repaint();
                 }
@@ -644,7 +662,6 @@ public class MainFrame extends JFrame {
                         myDialog1.setVisible(true);
                         Object answer1 = myPane1.getValue();
                         if (answer1.equals("Yes")) {
-                            System.out.println(detail.get(row)[3]);
                             restoreList(Integer.parseInt(detail.get(row)[3]));
                         }
                     }
@@ -653,6 +670,15 @@ public class MainFrame extends JFrame {
 
         };
 
+    }
+
+    private void syncCode() {
+        if (haveCode.isSelected())
+            for (ListPanel lp : Lists)
+                lp.setCode(true);
+        else
+            for (ListPanel lp : Lists)
+                lp.setCode(false);
     }
 
     private void startPrint() {
@@ -722,7 +748,9 @@ public class MainFrame extends JFrame {
 
     public GlassBuyInfo getGlassBuyInfo() {
         if (checkInformations()) {
-            GlassBuyInfo gbi = new GlassBuyInfo(name.getText(), new MyDate(String.format("%4s/%2s/%2s", year.getText(), month.getText(), day.getText()), false));
+            GlassBuyInfo gbi = new GlassBuyInfo(name.getText(),
+                    new MyDate(String.format("%4s/%2s/%2s", year.getText(), month.getText(), day.getText()), false),
+                    haveCode.isSelected());
             for (ListPanel lp : Lists) {
                 GlassType gt = lp.getGlassType();
                 if (gt == null)
@@ -937,12 +965,14 @@ public class MainFrame extends JFrame {
     private void restoreList(int orderID) {
         startChangeMode();
         changeID = orderID;
-        GlassBuyInfo gbi = dataBaseManager.getOrderIformations(orderID);
+        GlassBuyInfo gbi = dataBaseManager.getOrderInformation(orderID);
         name.setText(gbi.getCustomer());
         year.setText(gbi.getDate().getYear() + "");
         month.setText(gbi.getDate().getMonth() + "");
         day.setText(gbi.getDate().getDay() + "");
         aghlam.setText(gbi.getList().size() + "");
+        haveCode.setSelected(gbi.getHasCode());
+        syncCode();
         syncAghlamPanels();
         for (int i = 0; i < gbi.getList().size(); i++) {
             Lists.get(i).setAttribute(gbi.getList().get(i));
@@ -959,7 +989,7 @@ public class MainFrame extends JFrame {
             Lists.remove(Lists.size() - 1);
         }
         for (; newN > oldN; oldN++) {
-            Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(), noneStandarList));
+            Lists.add(new ListPanel(defaultFont, newHeight, listShishe, Lists.size(), noneStandarList, haveCode.isSelected()));
             Lists.get(Lists.size() - 1).addPropertyChangeListener(aghlamListener);
             listPanel.add(Lists.get(Lists.size() - 1));
         }
@@ -989,6 +1019,8 @@ public class MainFrame extends JFrame {
         day.setText(MyDate.nowDateShamsi().getDay() + "");
         aghlam.setText("1");
         syncAghlamPanels();
+        haveCode.setSelected(false);
+        syncCode();
         Lists.get(0).setNewPanel();
     }
 

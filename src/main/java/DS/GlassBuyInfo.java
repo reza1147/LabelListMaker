@@ -10,6 +10,15 @@ public class GlassBuyInfo {
     private MyDate date;
     private List<GlassType> list;
     private  Integer ID;
+    private Boolean hasCode;
+
+    public Boolean getHasCode() {
+        return hasCode;
+    }
+
+    public void setHasCode(Boolean hasCode) {
+        this.hasCode = hasCode;
+    }
 
     public Integer getID() {
         return ID;
@@ -19,9 +28,10 @@ public class GlassBuyInfo {
         this.ID = ID;
     }
 
-    public GlassBuyInfo(String customer, MyDate date) {
+    public GlassBuyInfo(String customer, MyDate date,Boolean hasCode ) {
         this.customer = customer;
         this.date = date;
+        this.hasCode = hasCode;
         list = new ArrayList<>();
     }
 

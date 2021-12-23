@@ -4,11 +4,13 @@ public class Glass {
     private double w;
     private double h;
     private int c;
+    private String code;
 
-    public Glass(double w, double h, int c) {
+    public Glass(double w, double h, int c, String code) {
         this.w = w;
         this.h = h;
         this.c = c;
+        this.code = code;
     }
 
     public double getW() {
@@ -33,6 +35,14 @@ public class Glass {
 
     public void setC(int c) {
         this.c = c;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     @Override

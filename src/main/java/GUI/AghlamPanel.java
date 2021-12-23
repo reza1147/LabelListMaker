@@ -14,15 +14,17 @@ import java.util.Set;
  */
 public class AghlamPanel extends JPanel {
     private JLabel zarb, khat, radif;
-    private JTextField arz, tul, tedad;
+    private JTextField arz, tul, tedad, code;
     private Font defaultFont;
     private FocusListener aghlamPanelListener;
     private Integer numberR;
     private Double[][] noneStandarList;
+    private Boolean hasCode;
 
-    public AghlamPanel(int number, Font defaultFont, Double[][] noneStandarList) {
+    public AghlamPanel(int number, Font defaultFont, Double[][] noneStandarList, Boolean hasCode) {
         super(new FlowLayout(FlowLayout.RIGHT, 3, 3));
-        setPreferredSize(new Dimension(250, 39));
+        setPreferredSize(new Dimension(300, 39));
+        this.hasCode = hasCode;
         this.defaultFont = defaultFont;
         this.numberR = number;
         this.noneStandarList = noneStandarList;
@@ -70,12 +72,20 @@ public class AghlamPanel extends JPanel {
         tedad.addFocusListener(aghlamPanelListener);
         setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 
+        code = new JTextField("");
+        code.setPreferredSize(new Dimension(55, 30));
+        code.setFont(this.defaultFont);
+        code.addFocusListener(aghlamPanelListener);
+        code.setVisible(hasCode);
+        setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+
         add(radif);
         add(arz);
         add(zarb);
         add(tul);
         add(khat);
         add(tedad);
+        add(code);
 
         syncToolTip();
     }
@@ -206,12 +216,21 @@ public class AghlamPanel extends JPanel {
         arz.setText(g.getW() + "");
         tul.setText(g.getH() + "");
         tedad.setText(g.getC() + "");
+        code.setText(g.getCode());
+    }
+
+    public void setHasCode(Boolean hasCode) {
+        this.hasCode = hasCode;
+        code.setVisible(hasCode);
+        revalidate();
+        repaint();
     }
 
     public void setNewPanel() {
         arz.setText("100");
         tul.setText("100");
         tedad.setText("1");
+        code.setText("");
         firePropertyChange("tedad", null, null);
         firePropertyChange("metrazh", null, null);
     }
@@ -222,7 +241,7 @@ public class AghlamPanel extends JPanel {
             Double t = getTul();
             Integer te = Integer.parseInt(tedad.getText());
             if (a > 0 && t > 0 && te > 0)
-                return new Glass(a, t, te);
+                return new Glass(a, t, te, code.getText());
         }
         return null;
     }
